@@ -8,7 +8,7 @@ using namespace glm;
 
 void fb_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija);
-void scroll_callback(GLFWwindow *window, double x_offset, double yoffset);
+void scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 void update(GLFWwindow* window);
@@ -36,8 +36,11 @@ int main() {
 
     //namestamo podatke u odnosu na prozor, kad god se velicina promeni
     glfwSetFramebufferSizeCallback(window, fb_size_callback);
+
+    //obradjujemo potencijalno kliktanje misa, tastature ili skrolovanja
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetKeyCallback(window, key_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     //pozivamo glad lib da nam ucita sve openGL fje
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
@@ -48,13 +51,19 @@ int main() {
 
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
-        //da li se nesto desilo?
-        glfwPollEvents();
+
         update(window);
+
+        //postavimo boju pozadine i ocistimo bafere da bi ta boja mogla da se vidi
+        glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         //imamo bafer u koji se pisu boje piksela i bafer koji se prikazuje rn,
         //ovde ih menjamo
         glfwSwapBuffers(window);
 
+        //da li se nesto desilo?
+        glfwPollEvents();
 
     }
 
@@ -65,17 +74,29 @@ void fb_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0,0,width,height);
 }
 
+//TODO: pomeranje u dubinu,
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija){
 
 }
 
+//TODO: nmp ni sta ovo radi protumacicu ga valjda lmao
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods){
 
 }
 
-void update(GLFWwindow* window){
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS){
-        glfwSetWindowShouldClose(window,true);
-    }
+//TODO: pomeranje u dubinu
+void scroll_callback(GLFWwindow *window, double x_offset, double y_offset){
+
+
 }
 
+
+//TODO: kretanje koriscenjem WASD ili LRUD, pomeranje kamere
+void update(GLFWwindow* window) {
+
+    //ako kliknemo escape izlazimo iz prozora
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS)
+        glfwSetWindowShouldClose(window,true);
+
+
+}

@@ -8,23 +8,23 @@
 		<Option virtualFolders="CMake Files\;CMake Files\glad\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad"/>
+				<Option working_dir="/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="glad">
-				<Option output="/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/libglad.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad"/>
+				<Option output="/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/libglad.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/mila/CLionProjects/projekat_andjela_mila/glad/include"/>
+					<Add directory="/home/mila/Documents/ComputerGraphicsProject/glad/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
 					<Add directory="/usr/include/c++/7/backward"/>
@@ -35,20 +35,20 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 glad"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 glad"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="glad/fast">
-				<Option output="/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/libglad.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad"/>
+				<Option output="/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/libglad.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/mila/CLionProjects/projekat_andjela_mila/glad/include"/>
+					<Add directory="/home/mila/Documents/ComputerGraphicsProject/glad/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
 					<Add directory="/usr/include/c++/7/backward"/>
@@ -59,35 +59,35 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 glad/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 glad/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/glad/include/glad/glad.h">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/glad/include/glad/glad.h">
 			<Option target="glad"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/glad/src/glad.c">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/glad/src/glad.c">
 			<Option target="glad"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/CMakeLists.txt">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/glad/CMakeLists.txt">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/glad/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\glad\"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Config.cmake">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Config.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3ConfigVersion.cmake">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3ConfigVersion.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets-none.cmake">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets-none.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
 		</Unit>
-		<Unit filename="/home/mila/CLionProjects/projekat_andjela_mila/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets.cmake">
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/../../../../usr/lib/x86_64-linux-gnu/cmake/glfw3/glfw3Targets.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\glfw3\"/>
 		</Unit>
 	</Project>

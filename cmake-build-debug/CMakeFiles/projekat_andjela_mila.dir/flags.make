@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++14
 
 CXX_DEFINES = -DGLFW_DLL
 
-CXX_INCLUDES = -I/home/mila/CLionProjects/projekat_andjela_mila/glad/include 
+CXX_INCLUDES = -I/home/mila/Documents/ComputerGraphicsProject/glad/include 
 

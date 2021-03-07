@@ -1,4 +1,4 @@
-# Install script for directory: /home/mila/CLionProjects/projekat_andjela_mila/glad
+# Install script for directory: /home/mila/Documents/ComputerGraphicsProject/glad
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
