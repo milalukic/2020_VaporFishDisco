@@ -1,0 +1,6 @@
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/CMakeFiles/projekat_andjela_mila.dir
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/CMakeFiles/edit_cache.dir
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/CMakeFiles/rebuild_cache.dir
+/home/mila/CLionProjects/projekat_andjela_mila/cmake-build-debug/glad/CMakeFiles/glad.dir

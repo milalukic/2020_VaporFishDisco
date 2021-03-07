@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../glad/include/KHR/khrplatform.h
+stdint.h
+-
+inttypes.h
+-
+stdint.h
+-
+
+../glad/include/glad/glad.h
+KHR/khrplatform.h
+-
+
+/home/mila/CLionProjects/projekat_andjela_mila/main.cpp
+iostream
+-
+glad/glad.h
+-
+GLFW/glfw3.h
+-
+glm/glm.hpp
+-
+
