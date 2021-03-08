@@ -6,6 +6,6 @@ find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(glad/)
-add_executable(projekat_andjela_mila main.cpp)
+add_executable(projekat_andjela_mila main.cpp include/learnOpenGL/shader.h)
 
 target_link_libraries(projekat_andjela_mila glad glfw OpenGL::GL pthread X11 Xrandr Xi dl)

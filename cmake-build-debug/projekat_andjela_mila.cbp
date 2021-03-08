@@ -142,6 +142,9 @@
 		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/glad/src/glad.c">
 			<Option target="glad"/>
 		</Unit>
+		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/include/learnOpenGL/shader.h">
+			<Option target="projekat_andjela_mila"/>
+		</Unit>
 		<Unit filename="/home/mila/Documents/ComputerGraphicsProject/main.cpp">
 			<Option target="projekat_andjela_mila"/>
 		</Unit>

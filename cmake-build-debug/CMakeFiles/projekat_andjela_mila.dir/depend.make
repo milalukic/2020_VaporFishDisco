@@ -3,5 +3,6 @@
 
 CMakeFiles/projekat_andjela_mila.dir/main.cpp.o: ../glad/include/KHR/khrplatform.h
 CMakeFiles/projekat_andjela_mila.dir/main.cpp.o: ../glad/include/glad/glad.h
+CMakeFiles/projekat_andjela_mila.dir/main.cpp.o: ../include/learnopengl/shader.h
 CMakeFiles/projekat_andjela_mila.dir/main.cpp.o: ../main.cpp
 

@@ -4,14 +4,35 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "include/learnopengl/shader.h"
+
 using namespace glm;
 
 void fb_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija);
 void scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
-
 void update(GLFWwindow* window);
+
+
+const char *vertex_shader_source = R"s(
+    #version 330 core
+    layout (location = 0) in vec3 aPos;
+
+    void main() {
+        gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    }
+)s";
+
+const char *fragment_shader_source = R"s(
+    #version 330 core
+    out vec4 FragColor;
+
+    void main(){
+        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    }
+)s";
+
 
 int main() {
 
@@ -49,24 +70,73 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+
+
     // OBJEKAT EBO //////////////////////
 
+    ///VERTEX SHADER
+    unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
+    glCompileShader(vertex_shader);
+
+    int success = 0;
+    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //FRAGMENT SHADER
+    unsigned fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
+    glCompileShader(fragment_shader);
+
+    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //SHADER PROGRAM - linkovanje VS i FS
+    unsigned shader_program = glCreateProgram();
+    glAttachShader(shader_program, vertex_shader);
+    glAttachShader(shader_program, fragment_shader);
+    glLinkProgram(shader_program);
+
+    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u linkovanju\n";
+
+
+    glDeleteShader(vertex_shader);
+    glDeleteShader(fragment_shader);
+
     float vertices[] = {
-            0.0f, 0.5f, 0.0f, // gore
-            0.5f, -0.5f, 0.0f,  // desno
-            -0.5f, -0.5f, 0.0f  // levo
+            -0.6f, 0.5f, 0.0f, //gore levo
+            -0.6f, -0.5f, 0.0f, //dole levo
+            0.6f, -0.5f, 0.0f, //gore desno
+            0.6f, 0.5f, 0.0f //dole desno
+    };
+
+    unsigned int indices[] = {
+            1, 2, 3, //prvi trougao
+            0, 1, 3 //drugi trougao
     };
 
     unsigned int VBO; //vertex buffer object, iz RAM-a ucitava podatke na GPU
     unsigned int VAO; //vertex arr obj, govori openglu sta znace objekti u baferu
+    unsigned int EBO; //sadrzi indekse VBOa za svako teme
 
-    glGenBuffers(1, &VBO); // generise bafer
-    glGenVertexArrays(1, &VAO);
+    glGenVertexArrays(1, &VAO); // generise bafere
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO); //aktivira bafer
+
     glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); //aktivira bafer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -84,7 +154,14 @@ int main() {
 
         //postavimo boju pozadine i ocistimo bafere da bi ta boja mogla da se vidi
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        //crtamo objekat
+        glUseProgram(shader_program);
+        glBindVertexArray(VAO);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
         //imamo bafer u koji se pisu boje piksela i bafer koji se prikazuje rn,
         //ovde ih menjamo
@@ -95,6 +172,12 @@ int main() {
 
     }
 
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteProgram(shader_program);
+
+    glfwTerminate();
     return 0;
 }
 

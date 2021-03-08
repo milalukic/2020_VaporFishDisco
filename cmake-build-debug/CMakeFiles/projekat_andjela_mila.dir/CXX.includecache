@@ -18,6 +18,20 @@ stdint.h
 KHR/khrplatform.h
 -
 
+/home/mila/Documents/ComputerGraphicsProject/include/learnopengl/shader.h
+glad/glad.h
+-
+glm/glm.hpp
+-
+string
+-
+fstream
+-
+sstream
+-
+iostream
+-
+
 /home/mila/Documents/ComputerGraphicsProject/main.cpp
 iostream
 -
@@ -27,4 +41,6 @@ GLFW/glfw3.h
 -
 glm/glm.hpp
 -
+include/learnopengl/shader.h
+/home/mila/Documents/ComputerGraphicsProject/include/learnopengl/shader.h
 
