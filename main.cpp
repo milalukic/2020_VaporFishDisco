@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <cmath>
 
 #include "include/learnopengl/shader.h"
 
@@ -18,18 +19,24 @@ void update(GLFWwindow* window);
 const char *vertex_shader_source = R"s(
     #version 330 core
     layout (location = 0) in vec3 aPos;
+    layout (location = 1) in vec4 aColor;
+
+    out vec4 our_color;
 
     void main() {
         gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+        our_color = aColor;
     }
 )s";
 
 const char *fragment_shader_source = R"s(
     #version 330 core
     out vec4 FragColor;
+    //uniform vec4 our_color;
+    in vec4 our_color;
 
     void main(){
-        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        FragColor = our_color;
     }
 )s";
 
@@ -110,11 +117,20 @@ int main() {
     glDeleteShader(fragment_shader);
 
     float vertices[] = {
-            -0.6f, 0.5f, 0.0f, //gore levo
-            -0.6f, -0.5f, 0.0f, //dole levo
-            0.6f, -0.5f, 0.0f, //gore desno
-            0.6f, 0.5f, 0.0f //dole desno
+            -0.6f, 0.5f, 0.0f, 0.9f, 0.2f, 0.7f, 1.0f, //gore levo
+            -0.6f, -0.5f, 0.0f, 0.3f, 0.7f, 0.8f, 1.0f, //dole levo
+            0.6f, -0.5f, 0.0f, 0.6f, 0.3f, 0.5f, 1.0f, //gore desno
+            0.6f, 0.5f, 0.0f, 1.0f, 0.5f, 0.6f, 1.0f,//dole desno
     };
+
+
+    //bez dodatnih atributa ako zatreba
+//    float vertices[] = {
+//            -0.6f, 0.5f, 0.0f, //gore levo
+//            -0.6f, -0.5f, 0.0f, //dole levo
+//            0.6f, -0.5f, 0.0f, //gore desno
+//            0.6f, 0.5f, 0.0f //dole desno
+//    };
 
     unsigned int indices[] = {
             1, 2, 3, //prvi trougao
@@ -138,8 +154,11 @@ int main() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(float), (void*)(3*sizeof(float)));
+
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -158,6 +177,15 @@ int main() {
 
         //crtamo objekat
         glUseProgram(shader_program);
+
+
+        // ako hocemo da menja boju uncomment
+
+//        float time_value = glfwGetTime();
+//        float green_value = sin(time_value)/2.0 + 0.5f;
+//        int vertex_color_location = glGetUniformLocation(shader_program, "our_color");
+//        glUniform4f(vertex_color_location, 0.0f, green_value, 0.0f, 1.0f);
+
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
