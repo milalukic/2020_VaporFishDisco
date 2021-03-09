@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/projekat_andjela_mila.dir/main.cpp.o  -o projekat_andjela_mila  glad/libglad.a /usr/lib/x86_64-linux-gnu/libglfw.so.3.2 -lpthread -lX11 -lXrandr -lXi -ldl /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so 

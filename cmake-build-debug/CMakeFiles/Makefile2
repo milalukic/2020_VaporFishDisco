@@ -73,93 +73,172 @@ CMAKE_BINARY_DIR = /home/mila/Documents/ComputerGraphicsProject/cmake-build-debu
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/projekat_andjela_mila.dir/all
-all: glad/all
+all: CMakeFiles/project_base.dir/all
+all: CMakeFiles/STB_IMAGE.dir/all
+all: libs/glad/all
+all: libs/imgui/all
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall: glad/preinstall
+preinstall: libs/glad/preinstall
+preinstall: libs/imgui/preinstall
 
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/projekat_andjela_mila.dir/clean
-clean: glad/clean
+clean: CMakeFiles/project_base.dir/clean
+clean: CMakeFiles/STB_IMAGE.dir/clean
+clean: libs/glad/clean
+clean: libs/imgui/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory glad
+# Directory level rules for directory libs/glad
 
 # Recursive "all" directory target.
-glad/all: glad/CMakeFiles/glad.dir/all
+libs/glad/all: libs/glad/CMakeFiles/glad.dir/all
 
-.PHONY : glad/all
+.PHONY : libs/glad/all
 
 # Recursive "preinstall" directory target.
-glad/preinstall:
+libs/glad/preinstall:
 
-.PHONY : glad/preinstall
+.PHONY : libs/glad/preinstall
 
 # Recursive "clean" directory target.
-glad/clean: glad/CMakeFiles/glad.dir/clean
+libs/glad/clean: libs/glad/CMakeFiles/glad.dir/clean
 
-.PHONY : glad/clean
+.PHONY : libs/glad/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/projekat_andjela_mila.dir
+# Directory level rules for directory libs/imgui
+
+# Recursive "all" directory target.
+libs/imgui/all: libs/imgui/CMakeFiles/imgui.dir/all
+
+.PHONY : libs/imgui/all
+
+# Recursive "preinstall" directory target.
+libs/imgui/preinstall:
+
+.PHONY : libs/imgui/preinstall
+
+# Recursive "clean" directory target.
+libs/imgui/clean: libs/imgui/CMakeFiles/imgui.dir/clean
+
+.PHONY : libs/imgui/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/project_base.dir
 
 # All Build rule for target.
-CMakeFiles/projekat_andjela_mila.dir/all: glad/CMakeFiles/glad.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target projekat_andjela_mila"
-.PHONY : CMakeFiles/projekat_andjela_mila.dir/all
+CMakeFiles/project_base.dir/all: CMakeFiles/STB_IMAGE.dir/all
+CMakeFiles/project_base.dir/all: libs/glad/CMakeFiles/glad.dir/all
+CMakeFiles/project_base.dir/all: libs/imgui/CMakeFiles/imgui.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=13,14 "Built target project_base"
+.PHONY : CMakeFiles/project_base.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/projekat_andjela_mila.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 4
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/projekat_andjela_mila.dir/all
+CMakeFiles/project_base.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 14
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/project_base.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/projekat_andjela_mila.dir/rule
+.PHONY : CMakeFiles/project_base.dir/rule
 
 # Convenience name for target.
-projekat_andjela_mila: CMakeFiles/projekat_andjela_mila.dir/rule
+project_base: CMakeFiles/project_base.dir/rule
 
-.PHONY : projekat_andjela_mila
+.PHONY : project_base
 
 # clean rule for target.
-CMakeFiles/projekat_andjela_mila.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/clean
-.PHONY : CMakeFiles/projekat_andjela_mila.dir/clean
+CMakeFiles/project_base.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/clean
+.PHONY : CMakeFiles/project_base.dir/clean
 
 #=============================================================================
-# Target rules for target glad/CMakeFiles/glad.dir
+# Target rules for target CMakeFiles/STB_IMAGE.dir
 
 # All Build rule for target.
-glad/CMakeFiles/glad.dir/all:
-	$(MAKE) $(MAKESILENT) -f glad/CMakeFiles/glad.dir/build.make glad/CMakeFiles/glad.dir/depend
-	$(MAKE) $(MAKESILENT) -f glad/CMakeFiles/glad.dir/build.make glad/CMakeFiles/glad.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target glad"
-.PHONY : glad/CMakeFiles/glad.dir/all
+CMakeFiles/STB_IMAGE.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target STB_IMAGE"
+.PHONY : CMakeFiles/STB_IMAGE.dir/all
 
 # Build rule for subdir invocation for target.
-glad/CMakeFiles/glad.dir/rule: cmake_check_build_system
+CMakeFiles/STB_IMAGE.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 glad/CMakeFiles/glad.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/STB_IMAGE.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 0
-.PHONY : glad/CMakeFiles/glad.dir/rule
+.PHONY : CMakeFiles/STB_IMAGE.dir/rule
 
 # Convenience name for target.
-glad: glad/CMakeFiles/glad.dir/rule
+STB_IMAGE: CMakeFiles/STB_IMAGE.dir/rule
+
+.PHONY : STB_IMAGE
+
+# clean rule for target.
+CMakeFiles/STB_IMAGE.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/clean
+.PHONY : CMakeFiles/STB_IMAGE.dir/clean
+
+#=============================================================================
+# Target rules for target libs/glad/CMakeFiles/glad.dir
+
+# All Build rule for target.
+libs/glad/CMakeFiles/glad.dir/all:
+	$(MAKE) $(MAKESILENT) -f libs/glad/CMakeFiles/glad.dir/build.make libs/glad/CMakeFiles/glad.dir/depend
+	$(MAKE) $(MAKESILENT) -f libs/glad/CMakeFiles/glad.dir/build.make libs/glad/CMakeFiles/glad.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=3,4 "Built target glad"
+.PHONY : libs/glad/CMakeFiles/glad.dir/all
+
+# Build rule for subdir invocation for target.
+libs/glad/CMakeFiles/glad.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 libs/glad/CMakeFiles/glad.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 0
+.PHONY : libs/glad/CMakeFiles/glad.dir/rule
+
+# Convenience name for target.
+glad: libs/glad/CMakeFiles/glad.dir/rule
 
 .PHONY : glad
 
 # clean rule for target.
-glad/CMakeFiles/glad.dir/clean:
-	$(MAKE) $(MAKESILENT) -f glad/CMakeFiles/glad.dir/build.make glad/CMakeFiles/glad.dir/clean
-.PHONY : glad/CMakeFiles/glad.dir/clean
+libs/glad/CMakeFiles/glad.dir/clean:
+	$(MAKE) $(MAKESILENT) -f libs/glad/CMakeFiles/glad.dir/build.make libs/glad/CMakeFiles/glad.dir/clean
+.PHONY : libs/glad/CMakeFiles/glad.dir/clean
+
+#=============================================================================
+# Target rules for target libs/imgui/CMakeFiles/imgui.dir
+
+# All Build rule for target.
+libs/imgui/CMakeFiles/imgui.dir/all: libs/glad/CMakeFiles/glad.dir/all
+	$(MAKE) $(MAKESILENT) -f libs/imgui/CMakeFiles/imgui.dir/build.make libs/imgui/CMakeFiles/imgui.dir/depend
+	$(MAKE) $(MAKESILENT) -f libs/imgui/CMakeFiles/imgui.dir/build.make libs/imgui/CMakeFiles/imgui.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles --progress-num=5,6,7,8,9,10,11,12 "Built target imgui"
+.PHONY : libs/imgui/CMakeFiles/imgui.dir/all
+
+# Build rule for subdir invocation for target.
+libs/imgui/CMakeFiles/imgui.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 10
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 libs/imgui/CMakeFiles/imgui.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/CMakeFiles 0
+.PHONY : libs/imgui/CMakeFiles/imgui.dir/rule
+
+# Convenience name for target.
+imgui: libs/imgui/CMakeFiles/imgui.dir/rule
+
+.PHONY : imgui
+
+# clean rule for target.
+libs/imgui/CMakeFiles/imgui.dir/clean:
+	$(MAKE) $(MAKESILENT) -f libs/imgui/CMakeFiles/imgui.dir/build.make libs/imgui/CMakeFiles/imgui.dir/clean
+.PHONY : libs/imgui/CMakeFiles/imgui.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

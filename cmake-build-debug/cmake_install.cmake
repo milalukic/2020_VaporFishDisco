@@ -38,8 +38,10 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/glad/cmake_install.cmake")
+  # Include the install script for each subdirectory.
+  include("/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/glad/cmake_install.cmake")
+  include("/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/cmake_install.cmake")
+
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

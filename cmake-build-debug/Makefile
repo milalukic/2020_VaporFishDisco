@@ -131,17 +131,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named projekat_andjela_mila
+# Target rules for targets named project_base
 
 # Build rule for target.
-projekat_andjela_mila: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 projekat_andjela_mila
-.PHONY : projekat_andjela_mila
+project_base: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 project_base
+.PHONY : project_base
 
 # fast build rule for target.
-projekat_andjela_mila/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/build
-.PHONY : projekat_andjela_mila/fast
+project_base/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/build
+.PHONY : project_base/fast
+
+#=============================================================================
+# Target rules for targets named STB_IMAGE
+
+# Build rule for target.
+STB_IMAGE: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 STB_IMAGE
+.PHONY : STB_IMAGE
+
+# fast build rule for target.
+STB_IMAGE/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/build
+.PHONY : STB_IMAGE/fast
 
 #=============================================================================
 # Target rules for targets named glad
@@ -153,35 +166,75 @@ glad: cmake_check_build_system
 
 # fast build rule for target.
 glad/fast:
-	$(MAKE) $(MAKESILENT) -f glad/CMakeFiles/glad.dir/build.make glad/CMakeFiles/glad.dir/build
+	$(MAKE) $(MAKESILENT) -f libs/glad/CMakeFiles/glad.dir/build.make libs/glad/CMakeFiles/glad.dir/build
 .PHONY : glad/fast
 
-main.o: main.cpp.o
+#=============================================================================
+# Target rules for targets named imgui
 
-.PHONY : main.o
+# Build rule for target.
+imgui: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 imgui
+.PHONY : imgui
+
+# fast build rule for target.
+imgui/fast:
+	$(MAKE) $(MAKESILENT) -f libs/imgui/CMakeFiles/imgui.dir/build.make libs/imgui/CMakeFiles/imgui.dir/build
+.PHONY : imgui/fast
+
+libs/stb_image.o: libs/stb_image.cpp.o
+
+.PHONY : libs/stb_image.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/main.cpp.o
-.PHONY : main.cpp.o
+libs/stb_image.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/libs/stb_image.cpp.o
+.PHONY : libs/stb_image.cpp.o
 
-main.i: main.cpp.i
+libs/stb_image.i: libs/stb_image.cpp.i
 
-.PHONY : main.i
+.PHONY : libs/stb_image.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/main.cpp.i
-.PHONY : main.cpp.i
+libs/stb_image.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/libs/stb_image.cpp.i
+.PHONY : libs/stb_image.cpp.i
 
-main.s: main.cpp.s
+libs/stb_image.s: libs/stb_image.cpp.s
 
-.PHONY : main.s
+.PHONY : libs/stb_image.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/projekat_andjela_mila.dir/build.make CMakeFiles/projekat_andjela_mila.dir/main.cpp.s
-.PHONY : main.cpp.s
+libs/stb_image.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STB_IMAGE.dir/build.make CMakeFiles/STB_IMAGE.dir/libs/stb_image.cpp.s
+.PHONY : libs/stb_image.cpp.s
+
+src/main.o: src/main.cpp.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project_base.dir/build.make CMakeFiles/project_base.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 # Help Target
 help:
@@ -191,11 +244,16 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... STB_IMAGE"
 	@echo "... glad"
-	@echo "... projekat_andjela_mila"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... imgui"
+	@echo "... project_base"
+	@echo "... libs/stb_image.o"
+	@echo "... libs/stb_image.i"
+	@echo "... libs/stb_image.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

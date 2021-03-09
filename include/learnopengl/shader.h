@@ -8,10 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-//#include <common.h>
-
-
+#include <common.h>
 class Shader
 {
 public:
