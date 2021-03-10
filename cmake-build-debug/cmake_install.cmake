@@ -1,4 +1,4 @@
-# Install script for directory: /home/mila/Documents/ComputerGraphicsProject
+# Install script for directory: /home/adeline/CLionProjects/ComputerGraphicsProject
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/glad/cmake_install.cmake")
-  include("/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/cmake_install.cmake")
+  include("/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/glad/cmake_install.cmake")
+  include("/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/cmake_install.cmake")
 
 endif()
 
@@ -52,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

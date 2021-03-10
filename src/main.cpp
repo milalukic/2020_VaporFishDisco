@@ -47,33 +47,34 @@ const char *objekat_fragment_shader_source = R"s(
 
     void main(){
         FragColor = mix(texture(texture1, tex_coord),our_color, 0.5) ;
+        //FragColor = our_color;
     }
 )s";
 
 const char *kocka_vertex_shader_source = R"s(
-#version 330 core
-layout (location = 0) in vec3 aPosK;
-layout (location = 1) in vec2 aTexCoordsK;
-layout (location = 2) in vec4 aColorK;
+    #version 330 core
+    layout (location = 0) in vec3 aPosK;
+    layout (location = 1) in vec2 aTexCoordsK;
+    layout (location = 2) in vec4 aColorK;
 
-out vec2 tex_coordK;
-out our_colorK;
+    out vec2 tex_coordK;
+    out vec4 our_colorK;
 
-uniform mat4 model_kocka;
-uniform mat4 view_kocka;
-uniform mat4 projection_kocka;
+    uniform mat4 model_kocka;
+    uniform mat4 view_kocka;
+    uniform mat4 projection_kocka;
 
 
-void main()
-{
-    gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
-  //  our_colorK = aColorK;
-    tex_coordK = vec2(aTexCoordK.x, aTexCoordK.y);
-}
+    void main()
+    {
+        gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
+      //  our_colorK = aColorK;
+        tex_coordK = vec2(aTexCoordsK.x, aTexCoordsK.y);
+    }
 )s";
 
 const char *kocka_fragment_shader_source = R"s(
-#version 330 core
+    #version 330 core
     out vec4 FragColorK;
 
     in vec4 our_colorK;
@@ -82,7 +83,7 @@ const char *kocka_fragment_shader_source = R"s(
     uniform sampler2D texture_kocka;
 
     void main(){
-        FragColorK = texture_kocka;
+        FragColorK = texture(texture_kocka, tex_coordK);
     }
 
 
@@ -130,7 +131,7 @@ int main() {
 
     // OBJEKAT EBO //////////////////////
 
-    ///VERTEX SHADER
+    //VERTEX SHADER
     unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &objekat_vertex_shader_source, nullptr);
     glCompileShader(vertex_shader);
@@ -209,7 +210,7 @@ int main() {
     glBindVertexArray(0);
 
 
-    ///TEKSTURA
+    //TEKSTURA - pravougaonik
 
     unsigned int texture1;
     glGenTextures(1, &texture1);
@@ -367,7 +368,7 @@ int main() {
     stbi_image_free(data_kocka);
 
     glUseProgram(shader_program_kocka);
-    glUniform1i(glGetUniformLocation(shader_program_kocka, "textureK"), 0);
+    glUniform1i(glGetUniformLocation(shader_program_kocka, "texture_kocka"), 0);
 
 
 
@@ -429,6 +430,8 @@ int main() {
         int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
         glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));
 
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture_kocka);
 
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
