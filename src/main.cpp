@@ -1,24 +1,22 @@
 #include <iostream>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <cmath>
 #include <learnopengl/filesystem.h>
 #include <stb_image.h>
-
-#include "learnopengl/shader.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace glm;
 
 void fb_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija);
 void scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void update(GLFWwindow* window);
 
-
-const char *vertex_shader_source = R"s(
+const char *objekat_vertex_shader_source = R"s(
     #version 330 core
     layout (location = 0) in vec3 aPos;
     layout (location = 1) in vec4 aColor;
@@ -26,14 +24,19 @@ const char *vertex_shader_source = R"s(
 
     out vec4 our_color;
     out vec2 tex_coord;
+
+    uniform mat4 model_matrica;
+    uniform mat4 view_matrica;
+    uniform mat4 projection_matrica;
+
     void main() {
-        gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+        gl_Position = projection_matrica * view_matrica * model_matrica * vec4(aPos, 1.0);
         our_color = aColor;
         tex_coord = aTexCoord;
     }
 )s";
 
-const char *fragment_shader_source = R"s(
+const char *objekat_fragment_shader_source = R"s(
     #version 330 core
     out vec4 FragColor;
     //uniform vec4 our_color;
@@ -41,10 +44,9 @@ const char *fragment_shader_source = R"s(
     in vec2 tex_coord;
 
     uniform sampler2D texture1;
-    uniform sampler2D texture2;
 
     void main(){
-        FragColor = mix(texture(texture2, tex_coord),our_color, 0.5) ;
+        FragColor = mix(texture(texture1, tex_coord),our_color, 0.5) ;
     }
 )s";
 
@@ -85,13 +87,14 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    glEnable(GL_DEPTH_TEST);
 
 
     // OBJEKAT EBO //////////////////////
 
     ///VERTEX SHADER
     unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
+    glShaderSource(vertex_shader, 1, &objekat_vertex_shader_source, nullptr);
     glCompileShader(vertex_shader);
 
     int success = 0;
@@ -102,7 +105,7 @@ int main() {
 
     //FRAGMENT SHADER
     unsigned fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
+    glShaderSource(fragment_shader, 1, &objekat_fragment_shader_source, nullptr);
     glCompileShader(fragment_shader);
 
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
@@ -124,22 +127,15 @@ int main() {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
+
     float vertices[] = {
             //pozicije              //boja                          //tekstura koordinate
-            -0.6f, 0.5f, 0.0f,       0.9f, 0.2f, 0.7f, 1.0f,        1.0f, 1.0f,  //gore levo
-            -0.6f, -0.5f, 0.0f,      0.3f, 0.7f, 0.8f, 1.0f,        1.0f, 0.0f, //dole levo
-            0.6f, -0.5f, 0.0f,       0.6f, 0.3f, 0.5f, 1.0f,        0.0f, 0.0f,//gore desno
-            0.6f, 0.5f, 0.0f,        1.0f, 0.5f, 0.6f, 1.0f,        0.0f, 1.0f//dole desno
+            -0.5f, 0.5f, 0.0f,       0.9f, 0.2f, 0.7f, 1.0f,        1.0f, 1.0f,  //gore levo
+            -0.5f, -0.5f, 0.0f,      0.3f, 0.7f, 0.8f, 1.0f,        1.0f, 0.0f, //dole levo
+            0.5f, -0.5f, 0.0f,       0.6f, 0.3f, 0.5f, 1.0f,        0.0f, 0.0f,//gore desno
+            0.5f, 0.5f, 0.0f,        1.0f, 0.5f, 0.6f, 1.0f,        0.0f, 1.0f//dole desno
     };
 
-
-    //bez dodatnih atributa ako zatreba
-//    float vertices[] = {
-//            -0.6f, 0.5f, 0.0f, //gore levo
-//            -0.6f, -0.5f, 0.0f, //dole levo
-//            0.6f, -0.5f, 0.0f, //gore desno
-//            0.6f, 0.5f, 0.0f //dole desno
-//    };
 
     unsigned int indices[] = {
             1, 2, 3, //prvi trougao
@@ -175,7 +171,6 @@ int main() {
     glBindVertexArray(0);
 
 
-
     ///TEKSTURA
 
     unsigned int texture1;
@@ -190,7 +185,7 @@ int main() {
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/checkers.jpg").c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -202,33 +197,10 @@ int main() {
     }
     stbi_image_free(data);
 
-    unsigned int texture2;
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    data = stbi_load(FileSystem::getPath("resources/textures/awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
 
 
     glUseProgram(shader_program);
     glUniform1i(glGetUniformLocation(shader_program, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shader_program, "texture2"), 1);
 
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
@@ -237,16 +209,34 @@ int main() {
 
         //postavimo boju pozadine i ocistimo bafere da bi ta boja mogla da se vidi
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+
 
         //crtamo objekat
         glUseProgram(shader_program);
 
+        //PROJEKCIJA
+
+        mat4 model_matrica = mat4(1.0f);
+        model_matrica = rotate(model_matrica, radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+
+        mat4 view_matrica = mat4(1.0f);
+        view_matrica = translate(view_matrica, vec3(0.0f, 0.0f, -3.0f));
+
+        mat4 projection_matrica = mat4(1.0f);
+        projection_matrica = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+
+        int model_lokacija = glGetUniformLocation(shader_program, "model_matrica");
+        glUniformMatrix4fv(model_lokacija, 1, GL_FALSE, value_ptr(model_matrica));
+
+        int view_lokacija = glGetUniformLocation(shader_program, "view_matrica");
+        glUniformMatrix4fv(view_lokacija, 1, GL_FALSE, value_ptr(view_matrica));
+
+        int projection_lokacija = glGetUniformLocation(shader_program, "projection_matrica");
+        glUniformMatrix4fv(projection_lokacija, 1, GL_FALSE, value_ptr(projection_matrica));
 
         // ako hocemo da menja boju uncomment
 
