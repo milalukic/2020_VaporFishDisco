@@ -25,12 +25,12 @@ const char *objekat_vertex_shader_source = R"s(
     out vec4 our_color;
     out vec2 tex_coord;
 
-    uniform mat4 model_matrica;
-    uniform mat4 view_matrica;
-    uniform mat4 projection_matrica;
+    uniform mat4 model_pravougaonik;
+    uniform mat4 view_pravougaonik;
+    uniform mat4 projection_pravougaonik;
 
     void main() {
-        gl_Position = projection_matrica * view_matrica * model_matrica * vec4(aPos, 1.0);
+        gl_Position = projection_pravougaonik * view_pravougaonik * model_pravougaonik * vec4(aPos, 1.0);
         our_color = aColor;
         tex_coord = aTexCoord;
     }
@@ -39,7 +39,7 @@ const char *objekat_vertex_shader_source = R"s(
 const char *objekat_fragment_shader_source = R"s(
     #version 330 core
     out vec4 FragColor;
-    //uniform vec4 our_color;
+
     in vec4 our_color;
     in vec2 tex_coord;
 
@@ -48,6 +48,44 @@ const char *objekat_fragment_shader_source = R"s(
     void main(){
         FragColor = mix(texture(texture1, tex_coord),our_color, 0.5) ;
     }
+)s";
+
+const char *kocka_vertex_shader_source = R"s(
+#version 330 core
+layout (location = 0) in vec3 aPosK;
+layout (location = 1) in vec2 aTexCoordsK;
+layout (location = 2) in vec4 aColorK;
+
+out vec2 tex_coordK;
+out our_colorK;
+
+uniform mat4 model_kocka;
+uniform mat4 view_kocka;
+uniform mat4 projection_kocka;
+
+
+void main()
+{
+    gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
+  //  our_colorK = aColorK;
+    tex_coordK = vec2(aTexCoordK.x, aTexCoordK.y);
+}
+)s";
+
+const char *kocka_fragment_shader_source = R"s(
+#version 330 core
+    out vec4 FragColorK;
+
+    in vec4 our_colorK;
+    in vec2 tex_coordK;
+
+    uniform sampler2D texture_kocka;
+
+    void main(){
+        FragColorK = texture_kocka;
+    }
+
+
 )s";
 
 
@@ -130,10 +168,10 @@ int main() {
 
     float vertices[] = {
             //pozicije              //boja                          //tekstura koordinate
-            -0.5f, 0.5f, 0.0f,       0.9f, 0.2f, 0.7f, 1.0f,        1.0f, 1.0f,  //gore levo
-            -0.5f, -0.5f, 0.0f,      0.3f, 0.7f, 0.8f, 1.0f,        1.0f, 0.0f, //dole levo
-            0.5f, -0.5f, 0.0f,       0.6f, 0.3f, 0.5f, 1.0f,        0.0f, 0.0f,//gore desno
-            0.5f, 0.5f, 0.0f,        1.0f, 0.5f, 0.6f, 1.0f,        0.0f, 1.0f//dole desno
+            -0.7f, 0.7f, -0.5f,       0.9f, 0.2f, 0.7f, 1.0f,        1.0f, 1.0f,  //gore levo
+            -0.7f, -0.7f, -0.5f,      0.3f, 0.7f, 0.8f, 1.0f,        1.0f, 0.0f, //dole levo
+            0.7f, -0.7f, -0.5f,       0.6f, 0.3f, 0.5f, 1.0f,        0.0f, 0.0f,//gore desno
+            0.7f, 0.7f, -0.5f,        1.0f, 0.5f, 0.6f, 1.0f,        0.0f, 1.0f//dole desno
     };
 
 
@@ -161,7 +199,7 @@ int main() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)0);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(3*sizeof(float)));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(7*sizeof (float )));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(7*sizeof (float)));
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -202,6 +240,137 @@ int main() {
     glUseProgram(shader_program);
     glUniform1i(glGetUniformLocation(shader_program, "texture1"), 0);
 
+
+    //KOCKA
+
+    //VERTEX SHADER
+    unsigned vertex_kocka = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_kocka, 1, &kocka_vertex_shader_source, nullptr);
+    glCompileShader(vertex_kocka);
+
+    int successK = 0;
+    glGetShaderiv(vertex_kocka, GL_COMPILE_STATUS, &successK);
+    if(!successK)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //FRAGMENT SHADER
+    unsigned fragment_kocka = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_kocka, 1, &kocka_fragment_shader_source, nullptr);
+    glCompileShader(fragment_kocka);
+
+    glGetShaderiv(fragment_kocka, GL_COMPILE_STATUS, &successK);
+    if(!successK)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //SHADER PROGRAM - linkovanje VS i FS
+    unsigned shader_program_kocka = glCreateProgram();
+    glAttachShader(shader_program_kocka, vertex_kocka);
+    glAttachShader(shader_program_kocka, fragment_kocka);
+    glLinkProgram(shader_program_kocka);
+
+    glGetProgramiv(shader_program_kocka, GL_LINK_STATUS, &successK);
+    if(!successK)
+        std::cout<<"greska u linkovanju\n";
+
+
+    glDeleteShader(vertex_kocka);
+    glDeleteShader(fragment_kocka);
+
+    float vertices_kocka[] = {
+            //koordinate tacaka     //koordinate teksture
+            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f, -0.5f, -0.5f,     1.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.3f, 0.7f, 0.8f, 1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f, -0.5f,  0.5f,     0.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            0.5f, -0.5f, -0.5f,     1.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.3f, 0.7f, 0.8f, 1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f
+    };
+
+    unsigned VBO_kocka, VAO_kocka;
+    glGenVertexArrays(1, &VAO_kocka);
+    glGenBuffers(1, &VBO_kocka);
+
+    glBindVertexArray(VAO_kocka);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_kocka);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_kocka), vertices_kocka, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(5 * sizeof(float)));
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    unsigned int texture_kocka;
+    // texture 1
+    // ---------
+    glGenTextures(1, &texture_kocka);
+    glBindTexture(GL_TEXTURE_2D, texture_kocka);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width_kocka, height_kocka, nrChannels_kocka;
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
+    if (data_kocka)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_kocka, height_kocka, 0, GL_RGB, GL_UNSIGNED_BYTE, data_kocka);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data_kocka);
+
+    glUseProgram(shader_program_kocka);
+    glUniform1i(glGetUniformLocation(shader_program_kocka, "textureK"), 0);
+
+
+
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
 
@@ -219,34 +388,52 @@ int main() {
         glUseProgram(shader_program);
 
         //PROJEKCIJA
+//
+        mat4 model_pravougaonik = mat4(1.0f);
+        model_pravougaonik = rotate(model_pravougaonik, radians(-55.0f), vec3(1.0f, 0.0f, 0.0f));
 
-        mat4 model_matrica = mat4(1.0f);
-        model_matrica = rotate(model_matrica, radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
+        mat4 view_pravougaonik = mat4(1.0f);
+        view_pravougaonik = translate(view_pravougaonik, vec3(0.0f, 0.0f, -3.0f));
 
-        mat4 view_matrica = mat4(1.0f);
-        view_matrica = translate(view_matrica, vec3(0.0f, 0.0f, -3.0f));
+        mat4 projection_pravougaonik = mat4(1.0f);
+        projection_pravougaonik = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
 
-        mat4 projection_matrica = mat4(1.0f);
-        projection_matrica = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+        int model_lokacija_P = glGetUniformLocation(shader_program, "model_pravougaonik");
+        glUniformMatrix4fv(model_lokacija_P, 1, GL_FALSE, value_ptr(model_pravougaonik));
 
-        int model_lokacija = glGetUniformLocation(shader_program, "model_matrica");
-        glUniformMatrix4fv(model_lokacija, 1, GL_FALSE, value_ptr(model_matrica));
+        int view_lokacija_P = glGetUniformLocation(shader_program, "view_pravougaonik");
+        glUniformMatrix4fv(view_lokacija_P, 1, GL_FALSE, value_ptr(view_pravougaonik));
 
-        int view_lokacija = glGetUniformLocation(shader_program, "view_matrica");
-        glUniformMatrix4fv(view_lokacija, 1, GL_FALSE, value_ptr(view_matrica));
+        int projection_lokacija_P = glGetUniformLocation(shader_program, "projection_pravougaonik");
+        glUniformMatrix4fv(projection_lokacija_P, 1, GL_FALSE, value_ptr(projection_pravougaonik));
 
-        int projection_lokacija = glGetUniformLocation(shader_program, "projection_matrica");
-        glUniformMatrix4fv(projection_lokacija, 1, GL_FALSE, value_ptr(projection_matrica));
 
-        // ako hocemo da menja boju uncomment
+        glUseProgram(shader_program_kocka);
 
-//        float time_value = glfwGetTime();
-//        float green_value = sin(time_value)/2.0 + 0.5f;
-//        int vertex_color_location = glGetUniformLocation(shader_program, "our_color");
-//        glUniform4f(vertex_color_location, 0.0f, green_value, 0.0f, 1.0f);
+        // ZA KOCKU
+        mat4 model_kocka = mat4(1.0f);
+        model_kocka = rotate(model_kocka, radians(30.0f), vec3(0.5f, 1.0f, 0.0f));
+
+        mat4 view_kocka = mat4(1.0f);
+        view_kocka = translate(view_kocka, vec3(0.0f, 0.0f, -3.0f));
+
+        mat4 projection_kocka = mat4(1.0f);
+        projection_kocka = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+
+        int model_lokacija_K = glGetUniformLocation(shader_program_kocka, "model_kocka");
+        glUniformMatrix4fv(model_lokacija_K, 1, GL_FALSE, value_ptr(model_kocka));
+
+        int view_lokacija_K = glGetUniformLocation(shader_program_kocka, "view_kocka");
+        glUniformMatrix4fv(view_lokacija_K, 1, GL_FALSE, value_ptr(view_kocka));
+
+        int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
+        glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));
+
+
+        glBindVertexArray(VAO_kocka);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glBindVertexArray(VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
@@ -258,6 +445,10 @@ int main() {
         glfwPollEvents();
 
     }
+
+    glDeleteVertexArrays(1, &VAO_kocka);
+    glDeleteBuffers(1, &VBO_kocka);
+    glDeleteProgram(shader_program_kocka);
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
