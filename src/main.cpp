@@ -46,34 +46,35 @@ const char *objekat_fragment_shader_source = R"s(
     uniform sampler2D texture1;
 
     void main(){
-        FragColor = mix(texture(texture1, tex_coord),our_color, 0.5) ;
+        FragColor = texture(texture1, tex_coord) ;
+        //FragColor = our_color;
     }
 )s";
 
 const char *kocka_vertex_shader_source = R"s(
-#version 330 core
-layout (location = 0) in vec3 aPosK;
-layout (location = 1) in vec2 aTexCoordsK;
-layout (location = 2) in vec4 aColorK;
+    #version 330 core
+    layout (location = 0) in vec3 aPosK;
+    layout (location = 1) in vec2 aTexCoordsK;
+    layout (location = 2) in vec4 aColorK;
 
-out vec2 tex_coordK;
-out our_colorK;
+    out vec2 tex_coordK;
+    out vec4 our_colorK;
 
-uniform mat4 model_kocka;
-uniform mat4 view_kocka;
-uniform mat4 projection_kocka;
+    uniform mat4 model_kocka;
+    uniform mat4 view_kocka;
+    uniform mat4 projection_kocka;
 
 
-void main()
-{
-    gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
-  //  our_colorK = aColorK;
-    tex_coordK = vec2(aTexCoordK.x, aTexCoordK.y);
-}
+    void main()
+    {
+        gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
+        our_colorK = aColorK;
+        tex_coordK = vec2(aTexCoordsK.x, aTexCoordsK.y);
+    }
 )s";
 
 const char *kocka_fragment_shader_source = R"s(
-#version 330 core
+    #version 330 core
     out vec4 FragColorK;
 
     in vec4 our_colorK;
@@ -82,7 +83,7 @@ const char *kocka_fragment_shader_source = R"s(
     uniform sampler2D texture_kocka;
 
     void main(){
-        FragColorK = texture_kocka;
+        FragColorK = texture(texture_kocka, tex_coordK);
     }
 
 
@@ -130,7 +131,7 @@ int main() {
 
     // OBJEKAT EBO //////////////////////
 
-    ///VERTEX SHADER
+    //VERTEX SHADER
     unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &objekat_vertex_shader_source, nullptr);
     glCompileShader(vertex_shader);
@@ -168,10 +169,10 @@ int main() {
 
     float vertices[] = {
             //pozicije              //boja                          //tekstura koordinate
-            -0.7f, 0.7f, -0.5f,       0.9f, 0.2f, 0.7f, 1.0f,        1.0f, 1.0f,  //gore levo
-            -0.7f, -0.7f, -0.5f,      0.3f, 0.7f, 0.8f, 1.0f,        1.0f, 0.0f, //dole levo
-            0.7f, -0.7f, -0.5f,       0.6f, 0.3f, 0.5f, 1.0f,        0.0f, 0.0f,//gore desno
-            0.7f, 0.7f, -0.5f,        1.0f, 0.5f, 0.6f, 1.0f,        0.0f, 1.0f//dole desno
+            -0.7f, 0.7f, -0.5f,       0.7f, 1.0f, 1.0f, 1.0f,        1.0f, 1.0f,  //gore levo
+            -0.7f, -0.7f, -0.5f,      1.0f, 0.7f, 1.0f, 1.0f,        1.0f, 0.0f, //dole levo
+            0.7f, -0.7f, -0.5f,       1.0f, 1.0f, 0.7f, 1.0f,        0.0f, 0.0f,//gore desno
+            0.7f, 0.7f, -0.5f,        1.0f, 1.0f, 1.0f, 1.0f,        0.0f, 1.0f//dole desno
     };
 
 
@@ -207,39 +208,6 @@ int main() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-
-    ///TEKSTURA
-
-    unsigned int texture1;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/checkers.jpg").c_str(), &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-
-
-
-    glUseProgram(shader_program);
-    glUniform1i(glGetUniformLocation(shader_program, "texture1"), 0);
-
 
     //KOCKA
 
@@ -340,21 +308,48 @@ int main() {
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    unsigned int texture_kocka;
-    // texture 1
-    // ---------
-    glGenTextures(1, &texture_kocka);
-    glBindTexture(GL_TEXTURE_2D, texture_kocka);
-    // set the texture wrapping parameters
+
+    //TEKSTURA - pravougaonik i kocka
+
+    unsigned int texture1, texture_kocka;
+    int teksture[2];
+    teksture[0] = texture1;
+    teksture[1] = texture_kocka;
+    glGenTextures(2, (GLuint*)(teksture));
+
+    glBindTexture(GL_TEXTURE_2D, teksture[0]);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/checkers.jpg").c_str(), &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    glBindTexture(GL_TEXTURE_2D, teksture[1]);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     int width_kocka, height_kocka, nrChannels_kocka;
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/vaporwave.jpg").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
     if (data_kocka)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_kocka, height_kocka, 0, GL_RGB, GL_UNSIGNED_BYTE, data_kocka);
@@ -366,8 +361,9 @@ int main() {
     }
     stbi_image_free(data_kocka);
 
+    glUseProgram(shader_program);
     glUseProgram(shader_program_kocka);
-    glUniform1i(glGetUniformLocation(shader_program_kocka, "textureK"), 0);
+
 
 
 
@@ -380,9 +376,12 @@ int main() {
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        GLint tekstura_p_lokacija = glGetUniformLocation(shader_program, "texture1");
+        GLint tekstura_k_lokacija = glGetUniformLocation(shader_program_kocka, "texture_kocka");
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, teksture[0]);
+        glUniform1i(tekstura_p_lokacija, 0);
 
         //crtamo objekat
         glUseProgram(shader_program);
@@ -390,7 +389,7 @@ int main() {
         //PROJEKCIJA
 //
         mat4 model_pravougaonik = mat4(1.0f);
-        model_pravougaonik = rotate(model_pravougaonik, radians(-55.0f), vec3(1.0f, 0.0f, 0.0f));
+        model_pravougaonik = rotate(model_pravougaonik,  radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
         mat4 view_pravougaonik = mat4(1.0f);
         view_pravougaonik = translate(view_pravougaonik, vec3(0.0f, 0.0f, -3.0f));
@@ -407,12 +406,14 @@ int main() {
         int projection_lokacija_P = glGetUniformLocation(shader_program, "projection_pravougaonik");
         glUniformMatrix4fv(projection_lokacija_P, 1, GL_FALSE, value_ptr(projection_pravougaonik));
 
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glUseProgram(shader_program_kocka);
 
         // ZA KOCKU
         mat4 model_kocka = mat4(1.0f);
-        model_kocka = rotate(model_kocka, radians(30.0f), vec3(0.5f, 1.0f, 0.0f));
+        model_kocka = rotate(model_kocka, radians(0.0f), vec3(1.0f, 0.0f, 0.0f));
 
         mat4 view_kocka = mat4(1.0f);
         view_kocka = translate(view_kocka, vec3(0.0f, 0.0f, -3.0f));
@@ -429,13 +430,12 @@ int main() {
         int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
         glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, teksture[1]);
+        glUniform1i(tekstura_k_lokacija, 0);
 
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 
         //imamo bafer u koji se pisu boje piksela i bafer koji se prikazuje rn,
         //ovde ih menjamo
