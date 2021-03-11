@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_demo.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_demo.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_draw.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_draw.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_impl_glfw.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_impl_glfw.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_impl_opengl3.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_impl_opengl3.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_tables.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_tables.cpp.o"
-  "/home/mila/Documents/ComputerGraphicsProject/libs/imgui/src/imgui_widgets.cpp" "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_widgets.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_demo.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_demo.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_draw.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_draw.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_impl_glfw.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_impl_glfw.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_impl_opengl3.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_impl_opengl3.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_tables.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_tables.cpp.o"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/libs/imgui/src/imgui_widgets.cpp" "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/imgui/CMakeFiles/imgui.dir/src/imgui_widgets.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -27,7 +27,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/libs/glad/CMakeFiles/glad.dir/DependInfo.cmake"
+  "/home/adeline/CLionProjects/ComputerGraphicsProject/cmake-build-debug/libs/glad/CMakeFiles/glad.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

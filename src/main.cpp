@@ -46,7 +46,11 @@ const char *objekat_fragment_shader_source = R"s(
     uniform sampler2D texture1;
 
     void main(){
+<<<<<<< HEAD
         FragColor = texture(texture1, tex_coord) ;
+=======
+        FragColor = mix(texture(texture1, tex_coord),our_color, 0.5) ;
+>>>>>>> 553b5e4a622384ba3536e97d323aac27420e7f14
         //FragColor = our_color;
     }
 )s";
@@ -68,7 +72,11 @@ const char *kocka_vertex_shader_source = R"s(
     void main()
     {
         gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
+<<<<<<< HEAD
         our_colorK = aColorK;
+=======
+      //  our_colorK = aColorK;
+>>>>>>> 553b5e4a622384ba3536e97d323aac27420e7f14
         tex_coordK = vec2(aTexCoordsK.x, aTexCoordsK.y);
     }
 )s";
@@ -209,6 +217,42 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+<<<<<<< HEAD
+=======
+
+    //TEKSTURA - pravougaonik
+
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/checkers.jpg").c_str(), &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+
+
+    glUseProgram(shader_program);
+    glUniform1i(glGetUniformLocation(shader_program, "texture1"), 0);
+
+
+>>>>>>> 553b5e4a622384ba3536e97d323aac27420e7f14
     //KOCKA
 
     //VERTEX SHADER
@@ -363,7 +407,11 @@ int main() {
 
     glUseProgram(shader_program);
     glUseProgram(shader_program_kocka);
+<<<<<<< HEAD
 
+=======
+    glUniform1i(glGetUniformLocation(shader_program_kocka, "texture_kocka"), 0);
+>>>>>>> 553b5e4a622384ba3536e97d323aac27420e7f14
 
 
 
@@ -430,9 +478,14 @@ int main() {
         int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
         glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));
 
+<<<<<<< HEAD
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, teksture[1]);
         glUniform1i(tekstura_k_lokacija, 0);
+=======
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture_kocka);
+>>>>>>> 553b5e4a622384ba3536e97d323aac27420e7f14
 
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
