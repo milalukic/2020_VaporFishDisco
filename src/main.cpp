@@ -7,7 +7,6 @@
 #include <stb_image.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include <learnopengl/shader.h>
 
 
 using namespace glm;
@@ -94,6 +93,11 @@ const char *kocka_fragment_shader_source = R"s(
 
 )s";
 
+//kamera pozicije
+
+vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
+vec3 kamera_front = vec3(0.0f, 0.0f, -1.0f);
+vec3 kamera_gore = vec3(0.0f, 1.0f, 0.0f);
 
 
 int main() {
@@ -215,19 +219,15 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    //kamera
-    vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
-    vec3 kamera_target = vec3(0.0f,0.0f,0.0f);
-    vec3 kamera_dir = normalize(kamera_pos - kamera_target);
+//    //kamera - prva podesavanja, vrv nece trebati vise
+//    vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
+//    vec3 kamera_target = vec3(0.0f,0.0f,0.0f);
+//    vec3 kamera_dir = normalize(kamera_pos - kamera_target);
+//
+//    vec3 gore = vec3(0.0f, 1.0f, 0.0f);
+//    vec3 kamera_desno = normalize(cross(gore, kamera_dir));
+//    vec3 kamera_gore = cross(kamera_dir, kamera_desno);
 
-    vec3 gore = vec3(0.0f, 1.0f, 0.0f);
-    vec3 kamera_desno = normalize(cross(gore, kamera_dir));
-    vec3 kamera_gore = cross(kamera_dir, kamera_desno);
-
-//    mat4 pogled;
-//    pogled = lookAt(vec3(0.0f, 0.0f, 3.0f),
-//                    vec3(0.0f, 0.0f, 0.0f),
-//                    vec3(0.0f, 1.0f, 0.0f));
 
 
     //KOCKA
@@ -405,13 +405,20 @@ int main() {
         //crtamo objekat
         glUseProgram(shader_program);
 
-        //kamera-transformacija pogleda
+        //kamera - transformacija pogleda
+
         mat4 pogled = mat4(1.0f);
         float radius = 6.0f;
+        //kako bi se vrtelo po sceni, dodamo ove u lookAt
         float kamera_X   = sin(glfwGetTime()) * radius;
         float kamera_Z   = cos(glfwGetTime()) * radius;
-        pogled = glm::lookAt(glm::vec3(kamera_X, 0.0f, kamera_Z), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        //ourShader.setMat4("view", view);
+
+        pogled = lookAt(kamera_pos, kamera_pos + kamera_front, kamera_gore);
+
+//        pogled = lookAt(vec3(kamera_X, 0.0f, kamera_Z),
+//                           vec3(0.0f, 0.0f, -3.0f), //z=-3 da seta po sceni, da miruje z=0
+//                           vec3(0.0f, 1.0f, 0.0f));
+
 
 
         //PROJEKCIJA
@@ -508,13 +515,19 @@ void scroll_callback(GLFWwindow *window, double x_offset, double y_offset){
 
 }
 
-
-//TODO: kretanje koriscenjem WASD ili LRUD, pomeranje kamere
 void update(GLFWwindow* window) {
 
+    const float camera_speed = 0.05f;
     //ako kliknemo escape izlazimo iz prozora
     if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS)
         glfwSetWindowShouldClose(window,true);
-
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        kamera_pos += camera_speed * kamera_front;
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        kamera_pos -= camera_speed * kamera_front;
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        kamera_pos -= normalize(cross(kamera_front, kamera_gore)) * camera_speed;
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        kamera_pos += normalize(cross(kamera_front, kamera_gore)) * camera_speed;
 
 }

@@ -6,14 +6,6 @@
 
 #IncludeRegexTransform: 
 
-../include/common.h
-string
--
-fstream
--
-sstream
--
-
 ../include/learnopengl/filesystem.h
 string
 -
@@ -21,22 +13,6 @@ cstdlib
 -
 root_directory.h
 ../include/learnopengl/root_directory.h
-
-../include/learnopengl/shader.h
-glad/glad.h
--
-glm/glm.hpp
--
-string
--
-fstream
--
-sstream
--
-iostream
--
-common.h
--
 
 ../include/stb_image.h
 stb_image.h
@@ -98,8 +74,6 @@ stb_image.h
 glm/gtc/matrix_transform.hpp
 /home/adeline/Downloads/faks/ComputerGraphicsProject/src/glm/gtc/matrix_transform.hpp
 glm/gtc/type_ptr.hpp
--
-learnopengl/shader.h
 -
 
 configuration/root_directory.h
