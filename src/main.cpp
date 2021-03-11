@@ -7,6 +7,8 @@
 #include <stb_image.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <learnopengl/shader.h>
+
 
 using namespace glm;
 
@@ -28,9 +30,10 @@ const char *objekat_vertex_shader_source = R"s(
     uniform mat4 model_pravougaonik;
     uniform mat4 view_pravougaonik;
     uniform mat4 projection_pravougaonik;
+    uniform mat4 pogled;
 
     void main() {
-        gl_Position = projection_pravougaonik * view_pravougaonik * model_pravougaonik * vec4(aPos, 1.0);
+        gl_Position = projection_pravougaonik * pogled * model_pravougaonik * vec4(aPos, 1.0);
         our_color = aColor;
         tex_coord = aTexCoord;
     }
@@ -63,11 +66,12 @@ const char *kocka_vertex_shader_source = R"s(
     uniform mat4 model_kocka;
     uniform mat4 view_kocka;
     uniform mat4 projection_kocka;
+    uniform mat4 pogled;
 
 
     void main()
     {
-        gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
+        gl_Position = projection_kocka * pogled * model_kocka * vec4(aPosK, 1.0);
         our_colorK = aColorK;
 
         tex_coordK = vec2(aTexCoordsK.x, aTexCoordsK.y);
@@ -89,6 +93,7 @@ const char *kocka_fragment_shader_source = R"s(
 
 
 )s";
+
 
 
 int main() {
@@ -210,7 +215,19 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    //kamera
+    vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
+    vec3 kamera_target = vec3(0.0f,0.0f,0.0f);
+    vec3 kamera_dir = normalize(kamera_pos - kamera_target);
 
+    vec3 gore = vec3(0.0f, 1.0f, 0.0f);
+    vec3 kamera_desno = normalize(cross(gore, kamera_dir));
+    vec3 kamera_gore = cross(kamera_dir, kamera_desno);
+
+//    mat4 pogled;
+//    pogled = lookAt(vec3(0.0f, 0.0f, 3.0f),
+//                    vec3(0.0f, 0.0f, 0.0f),
+//                    vec3(0.0f, 1.0f, 0.0f));
 
 
     //KOCKA
@@ -388,6 +405,15 @@ int main() {
         //crtamo objekat
         glUseProgram(shader_program);
 
+        //kamera-transformacija pogleda
+        mat4 pogled = mat4(1.0f);
+        float radius = 6.0f;
+        float kamera_X   = sin(glfwGetTime()) * radius;
+        float kamera_Z   = cos(glfwGetTime()) * radius;
+        pogled = glm::lookAt(glm::vec3(kamera_X, 0.0f, kamera_Z), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //ourShader.setMat4("view", view);
+
+
         //PROJEKCIJA
 //
         mat4 model_pravougaonik = mat4(1.0f);
@@ -402,8 +428,8 @@ int main() {
         int model_lokacija_P = glGetUniformLocation(shader_program, "model_pravougaonik");
         glUniformMatrix4fv(model_lokacija_P, 1, GL_FALSE, value_ptr(model_pravougaonik));
 
-        int view_lokacija_P = glGetUniformLocation(shader_program, "view_pravougaonik");
-        glUniformMatrix4fv(view_lokacija_P, 1, GL_FALSE, value_ptr(view_pravougaonik));
+        int view_lokacija_P = glGetUniformLocation(shader_program, "pogled");
+        glUniformMatrix4fv(view_lokacija_P, 1, GL_FALSE, value_ptr(pogled));
 
         int projection_lokacija_P = glGetUniformLocation(shader_program, "projection_pravougaonik");
         glUniformMatrix4fv(projection_lokacija_P, 1, GL_FALSE, value_ptr(projection_pravougaonik));
@@ -426,8 +452,8 @@ int main() {
         int model_lokacija_K = glGetUniformLocation(shader_program_kocka, "model_kocka");
         glUniformMatrix4fv(model_lokacija_K, 1, GL_FALSE, value_ptr(model_kocka));
 
-        int view_lokacija_K = glGetUniformLocation(shader_program_kocka, "view_kocka");
-        glUniformMatrix4fv(view_lokacija_K, 1, GL_FALSE, value_ptr(view_kocka));
+        int view_lokacija_K = glGetUniformLocation(shader_program_kocka, "pogled");
+        glUniformMatrix4fv(view_lokacija_K, 1, GL_FALSE, value_ptr(pogled));
 
         int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
         glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));

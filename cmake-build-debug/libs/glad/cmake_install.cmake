@@ -1,4 +1,4 @@
-# Install script for directory: /home/mila/Documents/ComputerGraphicsProject/libs/glad
+# Install script for directory: /home/adeline/Downloads/faks/ComputerGraphicsProject/libs/glad
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
