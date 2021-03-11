@@ -93,12 +93,27 @@ const char *kocka_fragment_shader_source = R"s(
 
 )s";
 
+//velicina prozora
+const unsigned int SCR_WIDTH = 1024;
+const unsigned int SCR_HEIGHT = 800;
+
 //kamera pozicije
 
 vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
 vec3 kamera_front = vec3(0.0f, 0.0f, -1.0f);
 vec3 kamera_gore = vec3(0.0f, 1.0f, 0.0f);
 
+//mis
+bool first_mouse = true;
+float kamera_yaw = -90.0f;
+float kamera_pitch = 0.0f;
+float last_X =  1024.0f / 2.0;
+float last_Y =  800.0 / 2.0;
+float fov = 45.0f;
+
+// timing
+float delta_time = 0.0f;	// time between current frame and last frame
+float last_frame = 0.0f;
 
 int main() {
 
@@ -111,7 +126,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow *window;
-    window = glfwCreateWindow(1024, 800, "Andjela Niketic, Mila Lukic", nullptr, nullptr);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Andjela Niketic, Mila Lukic", nullptr, nullptr);
     if (window == nullptr){
         std::cout << "GPU nije kompatibilna sa 3.3 verzijom\n";
         glfwTerminate();
@@ -128,6 +143,8 @@ int main() {
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetKeyCallback(window, key_callback);
     glfwSetScrollCallback(window, scroll_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //hvata i sakriva cursor
 
     //pozivamo glad lib da nam ucita sve openGL fje
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
@@ -199,14 +216,12 @@ int main() {
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO); //aktivira bafer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)0);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(3*sizeof(float)));
@@ -227,7 +242,6 @@ int main() {
 //    vec3 gore = vec3(0.0f, 1.0f, 0.0f);
 //    vec3 kamera_desno = normalize(cross(gore, kamera_dir));
 //    vec3 kamera_gore = cross(kamera_dir, kamera_desno);
-
 
 
     //KOCKA
@@ -268,7 +282,7 @@ int main() {
     glDeleteShader(fragment_kocka);
 
     float vertices_kocka[] = {
-            //koordinate tacaka     //koordinate teksture
+            //koordinate tacaka     //koordinate teksture   //boja
             -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
             0.5f, -0.5f, -0.5f,     1.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
             0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
@@ -332,7 +346,6 @@ int main() {
 
     //TEKSTURA - pravougaonik i kocka
 
-
     int teksture[2];
 
     glGenTextures(2, (GLuint*)(teksture));
@@ -388,6 +401,10 @@ int main() {
 
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
+        //frame-time
+        float curr_frame = glfwGetTime();
+        delta_time = curr_frame -last_frame;
+        last_frame = curr_frame;
 
         update(window);
 
@@ -402,12 +419,12 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, teksture[0]);
         glUniform1i(tekstura_p_lokacija, 0);
 
-        //crtamo objekat
-        glUseProgram(shader_program);
+        glUseProgram(shader_program);  //crtamo objekat
 
         //kamera - transformacija pogleda
 
         mat4 pogled = mat4(1.0f);
+
         float radius = 6.0f;
         //kako bi se vrtelo po sceni, dodamo ove u lookAt
         float kamera_X   = sin(glfwGetTime()) * radius;
@@ -416,7 +433,7 @@ int main() {
         pogled = lookAt(kamera_pos, kamera_pos + kamera_front, kamera_gore);
 
 //        pogled = lookAt(vec3(kamera_X, 0.0f, kamera_Z),
-//                           vec3(0.0f, 0.0f, -3.0f), //z=-3 da seta po sceni, da miruje z=0
+//                           vec3(0.0f, 0.0f, 0.0f), //z=-3 da seta po sceni, da miruje z=0
 //                           vec3(0.0f, 1.0f, 0.0f));
 
 
@@ -430,7 +447,7 @@ int main() {
         view_pravougaonik = translate(view_pravougaonik, vec3(0.0f, 0.0f, -3.0f));
 
         mat4 projection_pravougaonik = mat4(1.0f);
-        projection_pravougaonik = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+        projection_pravougaonik = perspective(radians(fov), 1024.0f / 800.0f, 0.1f, 100.0f);
 
         int model_lokacija_P = glGetUniformLocation(shader_program, "model_pravougaonik");
         glUniformMatrix4fv(model_lokacija_P, 1, GL_FALSE, value_ptr(model_pravougaonik));
@@ -449,12 +466,11 @@ int main() {
         // ZA KOCKU
         mat4 model_kocka = mat4(1.0f);
         model_kocka = rotate(model_kocka, radians(0.0f), vec3(1.0f, 0.0f, 0.0f));
-
         mat4 view_kocka = mat4(1.0f);
         view_kocka = translate(view_kocka, vec3(0.0f, 0.0f, -3.0f));
 
         mat4 projection_kocka = mat4(1.0f);
-        projection_kocka = perspective(radians(45.0f), 1024.0f / 800.0f, 0.1f, 100.0f);
+        projection_kocka = perspective(radians(fov), 1024.0f / 800.0f, 0.1f, 100.0f);
 
         int model_lokacija_K = glGetUniformLocation(shader_program_kocka, "model_kocka");
         glUniformMatrix4fv(model_lokacija_K, 1, GL_FALSE, value_ptr(model_kocka));
@@ -499,9 +515,37 @@ void fb_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0,0,width,height);
 }
 
-//TODO: pomeranje u dubinu,
+//pomeranje misa
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija){
+    if(first_mouse) {
+        last_X = x_pozicija;
+        last_Y = y_pozicija;
+        first_mouse = false;
+    }
+    float x_offset = x_pozicija - last_X;
+    float y_offset = last_Y - y_pozicija ; //naopako jer y-koordinate idu od dna ka vrhu
+    last_X = x_pozicija;
+    last_Y = y_pozicija;
 
+    float sensitivity = 0.05f;
+    x_offset *= sensitivity;
+    y_offset *= sensitivity;
+
+    kamera_yaw += x_offset;
+    kamera_pitch += y_offset;
+
+    //pitch van granica
+    if(kamera_pitch > 89.0f)
+        kamera_pitch = 89.0f;
+    if(kamera_pitch < -89.0f)
+        kamera_pitch = -89.0f;
+
+    vec3 front;
+    front.x = cos(radians(kamera_yaw)) * cos(radians(kamera_pitch));
+    front.y = sin(radians(kamera_pitch));
+    front.z = sin(radians(kamera_yaw)) * cos(radians(kamera_pitch));
+
+    kamera_front = normalize(front);
 }
 
 //TODO: nmp ni sta ovo radi protumacicu ga valjda lmao
@@ -509,14 +553,17 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 }
 
-//TODO: pomeranje u dubinu
+//zoom
 void scroll_callback(GLFWwindow *window, double x_offset, double y_offset){
-
-
+    fov -= (float)y_offset;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 45.0f)
+        fov = 45.0f;
 }
 
+//WASD, ESC
 void update(GLFWwindow* window) {
-
     const float camera_speed = 0.05f;
     //ako kliknemo escape izlazimo iz prozora
     if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS)
