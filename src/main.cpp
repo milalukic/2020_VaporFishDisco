@@ -92,7 +92,6 @@ const char *kocka_vertex_shader_source = R"s(
     uniform mat4 projection_kocka;
     uniform mat4 pogled;
 
-
     void main()
     {
         gl_Position = projection_kocka * pogled * model_kocka * vec4(aPosK, 1.0);
@@ -104,16 +103,24 @@ const char *kocka_vertex_shader_source = R"s(
 
 const char *kocka_fragment_shader_source = R"s(
     #version 330 core
+
     out vec4 FragColorK;
 
     in vec4 our_colorK;
     in vec2 tex_coordK;
 
     uniform sampler2D texture_kocka;
+    uniform vec3 lightColor;
 
-    void main(){
-        FragColorK = texture(texture_kocka, tex_coordK);
-    }
+
+void main(){
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+    ambient = vec4(ambient, 1.0);
+    FragColorK = texture(texture_kocka, tex_coordK);
+    vec3 result = ambient * FragColorK;
+    FragColor = result
+}
 
 
 )s";
@@ -137,17 +144,11 @@ const char *svetlost_fragment_shader_source = R"s(
 #version 330 core
 out vec4 FragColor;
 
-uniform vec3 lightColor;
-
 void main()
 {
-    FragColor = vec4(lightColor, 1.0);
+    FragColor = vec4(1.0);
 }
 )s";
-
-
-
-
 
 int main() {
 
@@ -461,6 +462,7 @@ int main() {
     glEnableVertexAttribArray(0);
 
 
+
     //TEKSTURA - pravougaonik i kocka
 
     int teksture[2];
@@ -600,6 +602,9 @@ int main() {
         int projection_lokacija_K = glGetUniformLocation(shader_program_kocka, "projection_kocka");
         glUniformMatrix4fv(projection_lokacija_K, 1, GL_FALSE, value_ptr(projection_kocka));
 
+        int lc_lokacija = glGetUniformLocation(shader_program_kocka, "lightColor");
+        glUniform3f(lc_lokacija, 1.0f, 1.0f, 1.0f);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, teksture[1]);
         glUniform1i(tekstura_k_lokacija, 0);
@@ -610,9 +615,6 @@ int main() {
 
         //svetlost kocka
         glUseProgram(shader_program_light);
-
-        int lc_lokacija = glGetUniformLocation(shader_program_light, "lightColor");
-        glUniform3f(lc_lokacija, 1.0f, 1.0f, 1.0f);
 
         mat4 projection_light = perspective(radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         mat4 view_light = pogled;
