@@ -11,6 +11,31 @@
 
 using namespace glm;
 
+//velicina prozora
+const unsigned int SCR_WIDTH = 1024;
+const unsigned int SCR_HEIGHT = 800;
+
+//kamera pozicije
+
+vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
+vec3 kamera_front = vec3(0.0f, 0.0f, -1.0f);
+vec3 kamera_gore = vec3(0.0f, 1.0f, 0.0f);
+
+//mis
+bool first_mouse = true;
+float kamera_yaw = -90.0f;
+float kamera_pitch = 0.0f;
+float last_X =  1024.0f / 2.0;
+float last_Y =  800.0 / 2.0;
+float fov = 45.0f;
+
+// timing
+float delta_time = 0.0f;	// time between current frame and last frame
+float last_frame = 0.0f;
+
+//svetlost
+vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 void fb_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija);
@@ -93,27 +118,33 @@ const char *kocka_fragment_shader_source = R"s(
 
 )s";
 
-//velicina prozora
-const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 800;
+const char *svetlost_vertex_shader_source = R"s(
+#version 330 core
+layout (location = 0) in vec3 aPos;
 
-//kamera pozicije
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
-vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
-vec3 kamera_front = vec3(0.0f, 0.0f, -1.0f);
-vec3 kamera_gore = vec3(0.0f, 1.0f, 0.0f);
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+}
 
-//mis
-bool first_mouse = true;
-float kamera_yaw = -90.0f;
-float kamera_pitch = 0.0f;
-float last_X =  1024.0f / 2.0;
-float last_Y =  800.0 / 2.0;
-float fov = 45.0f;
+)s";
 
-// timing
-float delta_time = 0.0f;	// time between current frame and last frame
-float last_frame = 0.0f;
+const char *svetlost_fragment_shader_source = R"s(
+#version 330 core
+out vec4 FragColor;
+
+uniform vec3 lightColor;
+
+void main()
+{
+    FragColor = vec4(lightColor, 1.0);
+}
+)s";
+
 
 int main() {
 
@@ -234,15 +265,6 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-//    //kamera - prva podesavanja, vrv nece trebati vise
-//    vec3 kamera_pos = vec3(0.0f, 0.0f, 3.0f);
-//    vec3 kamera_target = vec3(0.0f,0.0f,0.0f);
-//    vec3 kamera_dir = normalize(kamera_pos - kamera_target);
-//
-//    vec3 gore = vec3(0.0f, 1.0f, 0.0f);
-//    vec3 kamera_desno = normalize(cross(gore, kamera_dir));
-//    vec3 kamera_gore = cross(kamera_dir, kamera_desno);
-
 
     //KOCKA
 
@@ -344,6 +366,98 @@ int main() {
     glEnableVertexAttribArray(2);
 
 
+    //LIGHT SHADERI
+    unsigned vertex_light = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_light, 1, &svetlost_vertex_shader_source, nullptr);
+    glCompileShader(vertex_light);
+
+    glGetShaderiv(vertex_light, GL_COMPILE_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //FRAGMENT SHADER
+    unsigned fragment_light = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_light, 1, &svetlost_fragment_shader_source, nullptr);
+    glCompileShader(fragment_light);
+
+    glGetShaderiv(fragment_light, GL_COMPILE_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u kompilaciji\n";
+
+
+    //SHADER PROGRAM - linkovanje VS i FS
+    unsigned shader_program_light = glCreateProgram();
+    glAttachShader(shader_program_light, vertex_light);
+    glAttachShader(shader_program_light, fragment_light);
+    glLinkProgram(shader_program_light);
+
+    glGetProgramiv(shader_program_light, GL_LINK_STATUS, &success);
+    if(!success)
+        std::cout<<"greska u linkovanju\n";
+
+
+    glDeleteShader(vertex_light);
+    glDeleteShader(fragment_light);
+
+    float vertices_light[] = {
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f,
+    };
+
+    unsigned VBO_light, VAO_light;
+    glGenVertexArrays(1, &VAO_light);
+    glGenBuffers(1, &VBO_light);
+
+    glBindVertexArray(VAO_light);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(0);
+
+
     //TEKSTURA - pravougaonik i kocka
 
     int teksture[2];
@@ -411,6 +525,8 @@ int main() {
         //postavimo boju pozadine i ocistimo bafere da bi ta boja mogla da se vidi
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
         GLint tekstura_p_lokacija = glGetUniformLocation(shader_program, "texture1");
         GLint tekstura_k_lokacija = glGetUniformLocation(shader_program_kocka, "texture_kocka");
@@ -487,6 +603,28 @@ int main() {
 
 
         glBindVertexArray(VAO_kocka);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        //svetlost kocka
+        glUseProgram(shader_program_light);
+
+        int lc_lokacija = glGetUniformLocation(shader_program_light, "lightColor");
+        glUniform3f(lc_lokacija, 1.0f, 1.0f, 1.0f);
+
+        mat4 projection_light = perspective(radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 view_light = pogled;
+        int proj_lokacija = glGetUniformLocation(shader_program_light, "projection");
+        int view_lokacija = glGetUniformLocation(shader_program_light, "view");
+        glUniformMatrix4fv(proj_lokacija, 1, GL_FALSE, value_ptr(projection_light));
+        glUniformMatrix4fv(view_lokacija, 1, GL_FALSE, value_ptr(view_light));
+
+        mat4 model_light = mat4(1.0f);
+        model_light = translate(model_light, lightPos);
+        model_light = scale(model_light, vec3(0.2f));
+        int model_lokacija = glGetUniformLocation(shader_program_light, "model");
+        glUniformMatrix4fv(model_lokacija, 1, GL_FALSE, value_ptr(model_light));
+
+        glBindVertexArray(VAO_light);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //imamo bafer u koji se pisu boje piksela i bafer koji se prikazuje rn,
