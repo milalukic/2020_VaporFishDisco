@@ -79,7 +79,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
 
-    Shader pravougaonik_shader("pravougaonik.vs", "pravougaonik.fs");
+    Shader pravougaonik_shader("resources/shaders/pravougaonik.vs", "resources/shaders/pravougaonik.fs");
 
     float vertices[] = {
             //pozicije              //boja                          //tekstura koordinate
@@ -123,7 +123,7 @@ int main() {
 
     //Kocka
 
-    Shader kocka_shader("kocka.vs", "kocka.fs");
+    Shader kocka_shader("resources/shaders/kocka.vs", "resources/shaders/kocka.fs");
 
     float vertices_kocka[] = {
             //koordinate tacaka     //koordinate teksture   //boja
@@ -188,65 +188,65 @@ int main() {
     glEnableVertexAttribArray(2);
 
 
-    //LIGHT SOURCE
-    Shader light_source_shader("izvor_svetlosti.vs", "izvor_svetlosti.fs");
-
-    float vertices_light[] = {
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-    };
-
-    unsigned VBO_light, VAO_light;
-    glGenVertexArrays(1, &VAO_light);
-    glGenBuffers(1, &VBO_light);
-
-    glBindVertexArray(VAO_light);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(0);
+//    //LIGHT SOURCE
+//    Shader light_source_shader("resources/shaders/izvor_svetlosti.vs", "resources/shaders/izvor_svetlosti.fs");
+//
+//    float vertices_light[] = {
+//            -0.5f, -0.5f, -0.5f,
+//            0.5f, -0.5f, -0.5f,
+//            0.5f,  0.5f, -0.5f,
+//            0.5f,  0.5f, -0.5f,
+//            -0.5f,  0.5f, -0.5f,
+//            -0.5f, -0.5f, -0.5f,
+//
+//            -0.5f, -0.5f,  0.5f,
+//            0.5f, -0.5f,  0.5f,
+//            0.5f,  0.5f,  0.5f,
+//            0.5f,  0.5f,  0.5f,
+//            -0.5f,  0.5f,  0.5f,
+//            -0.5f, -0.5f,  0.5f,
+//
+//            -0.5f,  0.5f,  0.5f,
+//            -0.5f,  0.5f, -0.5f,
+//            -0.5f, -0.5f, -0.5f,
+//            -0.5f, -0.5f, -0.5f,
+//            -0.5f, -0.5f,  0.5f,
+//            -0.5f,  0.5f,  0.5f,
+//
+//            0.5f,  0.5f,  0.5f,
+//            0.5f,  0.5f, -0.5f,
+//            0.5f, -0.5f, -0.5f,
+//            0.5f, -0.5f, -0.5f,
+//            0.5f, -0.5f,  0.5f,
+//            0.5f,  0.5f,  0.5f,
+//
+//            -0.5f, -0.5f, -0.5f,
+//            0.5f, -0.5f, -0.5f,
+//            0.5f, -0.5f,  0.5f,
+//            0.5f, -0.5f,  0.5f,
+//            -0.5f, -0.5f,  0.5f,
+//            -0.5f, -0.5f, -0.5f,
+//
+//            -0.5f,  0.5f, -0.5f,
+//            0.5f,  0.5f, -0.5f,
+//            0.5f,  0.5f,  0.5f,
+//            0.5f,  0.5f,  0.5f,
+//            -0.5f,  0.5f,  0.5f,
+//            -0.5f,  0.5f, -0.5f,
+//    };
+//
+//    unsigned VBO_light, VAO_light;
+//    glGenVertexArrays(1, &VAO_light);
+//    glGenBuffers(1, &VBO_light);
+//
+//    glBindVertexArray(VAO_light);
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
+//
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+//
+//    glEnableVertexAttribArray(0);
 
 
 
@@ -389,28 +389,25 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //svetlost kocka
-        light_source_shader.use();
+//        light_source_shader.use();
+//
+//        mat4 projection_light = perspective(radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+//        mat4 view_light = pogled;
+//
+//        light_source_shader.setMat4("projection", projection_light);
+//        light_source_shader.setMat4("view", view_light);
+//
+//        mat4 model_light = mat4(1.0f);
+//        model_light = translate(model_light, lightPos);
+//        model_light = scale(model_light, vec3(0.2f));
+//
+//        light_source_shader.setMat4("model", model_light);
+//
+//        glBindVertexArray(VAO_light);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        mat4 projection_light = perspective(radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        mat4 view_light = pogled;
 
-        light_source_shader.setMat4("projection", projection_light);
-        light_source_shader.setMat4("view", view_light);
-
-        mat4 model_light = mat4(1.0f);
-        model_light = translate(model_light, lightPos);
-        model_light = scale(model_light, vec3(0.2f));
-
-        light_source_shader.setMat4("model", model_light);
-
-        glBindVertexArray(VAO_light);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        //imamo bafer u koji se pisu boje piksela i bafer koji se prikazuje rn,
-        //ovde ih menjamo
         glfwSwapBuffers(window);
-
-        //da li se nesto desilo?
         glfwPollEvents();
 
     }
