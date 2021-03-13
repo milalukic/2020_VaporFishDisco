@@ -353,7 +353,7 @@ int main() {
         projection_pravougaonik = perspective(radians(fov), 1024.0f / 800.0f, 0.1f, 100.0f);
 
         pravougaonik_shader.setMat4("model_pravougaonik", model_pravougaonik);
-        pravougaonik_shader.setMat4("view_pravougaonik", view_pravougaonik);
+        pravougaonik_shader.setMat4("view_pravougaonik", pogled);
         pravougaonik_shader.setMat4("projection_pravougaonik", projection_pravougaonik);
 
 
@@ -375,7 +375,7 @@ int main() {
 
 
         kocka_shader.setMat4("model_kocka", model_kocka);
-        kocka_shader.setMat4("view_kocka", view_kocka);
+        kocka_shader.setMat4("view_kocka", pogled);
         kocka_shader.setMat4("projection_kocka", projection_kocka);
 
 
