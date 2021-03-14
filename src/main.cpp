@@ -247,10 +247,12 @@ int main() {
 
 
     unsigned tekstura_pravougaonik = loadTexture(FileSystem::getPath("resources/textures/checkers.jpg").c_str());
-    unsigned diffuseMap = loadTexture(FileSystem::getPath("resources/textures/gold_marble.jpg").c_str());
+    unsigned diffuseMap = loadTexture(FileSystem::getPath("resources/textures/vaporwave.jpg").c_str());
+    unsigned specularMap = loadTexture(FileSystem::getPath("resources/textures/vaporwave_specular.jpg").c_str());
 
-    light_source_shader.use();
-    light_source_shader.setInt("material.diffuse", 0);
+    kocka_shader.use();
+    kocka_shader.setInt("material.diffuse", 0);
+    kocka_shader.setInt("material.specular", 1);
     pravougaonik_shader.use();
 
 
@@ -308,13 +310,12 @@ int main() {
         kocka_shader.setVec3("viewPos", kamera.Position);
 
         //osobine
-        kocka_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        kocka_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        kocka_shader.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
+        kocka_shader.setVec3("light.diffuse", 0.6f, 0.6f, 0.6f);
         kocka_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
         //materijal
-        kocka_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        kocka_shader.setFloat("material.shininess", 64.0f);
+        kocka_shader.setFloat("material.shininess", 90.0f);
 
         //proj
         mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -327,6 +328,8 @@ int main() {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
