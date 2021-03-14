@@ -15,5 +15,5 @@
          gl_Position = projection_kocka * view_kocka * model_kocka * vec4(aPosK, 1.0);
          our_colorK = aColorK;
 
-         tex_coordK = vec2(aTexCoordsK.x, aTexCoordsK.y);
+         tex_coordK = aTexCoordsK;
      }

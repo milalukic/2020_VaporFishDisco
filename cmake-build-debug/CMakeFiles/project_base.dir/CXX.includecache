@@ -14,6 +14,16 @@ fstream
 sstream
 -
 
+../include/learnopengl/camera.h
+glad/glad.h
+-
+glm/glm.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+vector
+-
+
 ../include/learnopengl/filesystem.h
 string
 -
@@ -132,6 +142,8 @@ learnopengl/shader.h
 learnopengl/shader_m.h
 -
 learnopengl/shader_s.h
+-
+learnopengl/camera.h
 -
 
 configuration/root_directory.h

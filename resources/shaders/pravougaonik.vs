@@ -13,5 +13,5 @@
     void main() {
         gl_Position = projection_pravougaonik * view_pravougaonik * model_pravougaonik * vec4(aPos, 1.0);
         our_color = aColor;
-        tex_coord = aTexCoord;
+        tex_coord = vec2(aTexCoord.x, aTexCoord.y);
     }
