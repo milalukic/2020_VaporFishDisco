@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS = -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -O3 -g   -std=gnu++14
 
-CXX_DEFINES = -DIMGUI_IMPL_OPENGL_LOADER_GLAD
+CXX_DEFINES = -DGLFW_DLL -DIMGUI_IMPL_OPENGL_LOADER_GLAD
 
-CXX_INCLUDES = -I/home/adeline/Desktop/rg/ComputerGraphicsProject/cmake-build-debug/configuration -I/home/adeline/Desktop/rg/ComputerGraphicsProject/include -I/home/adeline/Desktop/rg/ComputerGraphicsProject/libs/glad/include -I/home/adeline/Desktop/rg/ComputerGraphicsProject/libs/imgui/include 
+CXX_INCLUDES = -I/home/mila/Documents/ComputerGraphicsProject/cmake-build-debug/configuration -I/home/mila/Documents/ComputerGraphicsProject/include -I/home/mila/Documents/ComputerGraphicsProject/libs/glad/include -I/home/mila/Documents/ComputerGraphicsProject/libs/imgui/include 
 

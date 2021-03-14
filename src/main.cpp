@@ -30,7 +30,7 @@ float delta_time = 0.0f;	// time between current frame and last frame
 float last_frame = 0.0f;
 
 //svetlost
-//vec3 lightPos(1.2f, 1.0f, 2.0f);
+vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 void fb_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -179,65 +179,65 @@ int main() {
     glEnableVertexAttribArray(2);
 
 
-//    //LIGHT SOURCE
-//    Shader light_source_shader("resources/shaders/izvor_svetlosti.vs", "resources/shaders/izvor_svetlosti.fs");
-//
-//    float vertices_light[] = {
-//            -0.5f, -0.5f, -0.5f,
-//            0.5f, -0.5f, -0.5f,
-//            0.5f,  0.5f, -0.5f,
-//            0.5f,  0.5f, -0.5f,
-//            -0.5f,  0.5f, -0.5f,
-//            -0.5f, -0.5f, -0.5f,
-//
-//            -0.5f, -0.5f,  0.5f,
-//            0.5f, -0.5f,  0.5f,
-//            0.5f,  0.5f,  0.5f,
-//            0.5f,  0.5f,  0.5f,
-//            -0.5f,  0.5f,  0.5f,
-//            -0.5f, -0.5f,  0.5f,
-//
-//            -0.5f,  0.5f,  0.5f,
-//            -0.5f,  0.5f, -0.5f,
-//            -0.5f, -0.5f, -0.5f,
-//            -0.5f, -0.5f, -0.5f,
-//            -0.5f, -0.5f,  0.5f,
-//            -0.5f,  0.5f,  0.5f,
-//
-//            0.5f,  0.5f,  0.5f,
-//            0.5f,  0.5f, -0.5f,
-//            0.5f, -0.5f, -0.5f,
-//            0.5f, -0.5f, -0.5f,
-//            0.5f, -0.5f,  0.5f,
-//            0.5f,  0.5f,  0.5f,
-//
-//            -0.5f, -0.5f, -0.5f,
-//            0.5f, -0.5f, -0.5f,
-//            0.5f, -0.5f,  0.5f,
-//            0.5f, -0.5f,  0.5f,
-//            -0.5f, -0.5f,  0.5f,
-//            -0.5f, -0.5f, -0.5f,
-//
-//            -0.5f,  0.5f, -0.5f,
-//            0.5f,  0.5f, -0.5f,
-//            0.5f,  0.5f,  0.5f,
-//            0.5f,  0.5f,  0.5f,
-//            -0.5f,  0.5f,  0.5f,
-//            -0.5f,  0.5f, -0.5f,
-//    };
-//
-//    unsigned VBO_light, VAO_light;
-//    glGenVertexArrays(1, &VAO_light);
-//    glGenBuffers(1, &VBO_light);
-//
-//    glBindVertexArray(VAO_light);
-//
-//    glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
-//
-//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-//
-//    glEnableVertexAttribArray(0);
+    //LIGHT SOURCE
+    Shader light_source_shader("resources/shaders/izvor_svetlosti.vs", "resources/shaders/izvor_svetlosti.fs");
+
+    float vertices_light[] = {
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f,
+    };
+
+    unsigned VBO_light, VAO_light;
+    glGenVertexArrays(1, &VAO_light);
+    glGenBuffers(1, &VBO_light);
+
+    glBindVertexArray(VAO_light);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(0);
 
 
 
@@ -280,7 +280,7 @@ int main() {
 
     int width_kocka, height_kocka, nrChannels_kocka;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/vaporwave.jpg").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
+    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/Pink-Marble-Paper.png").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
     if (data_kocka)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_kocka, height_kocka, 0, GL_RGB, GL_UNSIGNED_BYTE, data_kocka);
@@ -366,22 +366,22 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //svetlost kocka
-//        light_source_shader.use();
-//
-//        mat4 projection_light = perspective(radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-//        mat4 view_light = pogled;
-//
-//        light_source_shader.setMat4("projection", projection_light);
-//        light_source_shader.setMat4("view", view_light);
-//
-//        mat4 model_light = mat4(1.0f);
-//        model_light = translate(model_light, lightPos);
-//        model_light = scale(model_light, vec3(0.2f));
-//
-//        light_source_shader.setMat4("model", model_light);
-//
-//        glBindVertexArray(VAO_light);
-//        glDrawArrays(GL_TRIANGLES, 0, 36);
+        light_source_shader.use();
+
+        mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 view_light = kamera.GetViewMatrix();
+
+        light_source_shader.setMat4("projection", projection_light);
+        light_source_shader.setMat4("view", view_light);
+
+        mat4 model_light = mat4(1.0f);
+        model_light = translate(model_light, lightPos);
+        model_light = scale(model_light, vec3(0.2f));
+
+        light_source_shader.setMat4("model", model_light);
+
+        glBindVertexArray(VAO_light);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
         glfwSwapBuffers(window);
@@ -421,7 +421,6 @@ void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija){
 
 //TODO: nmp ni sta ovo radi protumacicu ga valjda lmao
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods){
-
 }
 
 //zoom
