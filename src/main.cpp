@@ -245,38 +245,12 @@ int main() {
 
     //TEKSTURA - pravougaonik i kocka
 
-    int teksture[2];
 
-    glGenTextures(2, (GLuint*)(teksture));
-
-    glBindTexture(GL_TEXTURE_2D, teksture[0]);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(FileSystem::getPath("resources/textures/checkers.jpg").c_str(), &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
-
-    unsigned int diffuseMap = loadTexture(FileSystem::getPath("resources/textures/gold_marble.jpg").c_str());
+    unsigned tekstura_pravougaonik = loadTexture(FileSystem::getPath("resources/textures/checkers.jpg").c_str());
+    unsigned diffuseMap = loadTexture(FileSystem::getPath("resources/textures/gold_marble.jpg").c_str());
 
     light_source_shader.use();
     light_source_shader.setInt("material.diffuse", 0);
-
     pravougaonik_shader.use();
 
 
@@ -298,7 +272,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, teksture[0]);
+        glBindTexture(GL_TEXTURE_2D, tekstura_pravougaonik);
 
         //PROJEKCIJA - PRAVOUGAONIK
 
@@ -324,23 +298,32 @@ int main() {
         // PROJEKCIJA - KOCKA
 
         kocka_shader.use();
+        light_source_shader.setInt("material.diffuse", 0);
 
-        mat4 model_kocka = mat4(1.0f);
-        model_kocka = rotate(model_kocka, radians(0.0f), vec3(1.0f, 0.0f, 0.0f));
+        //svetlost kocka
+        kocka_shader.use();
 
-        mat4 view_kocka = mat4(1.0f);
-        view_kocka = translate(view_kocka, vec3(0.0f, 0.0f, -3.0f));
+        //uniforms
+        kocka_shader.setVec3("light.position", lightPos);
+        kocka_shader.setVec3("viewPos", kamera.Position);
 
-        mat4 projection_kocka = mat4(1.0f);
-        projection_kocka = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        //osobine
+        kocka_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        kocka_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        kocka_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
+        //materijal
+        kocka_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        kocka_shader.setFloat("material.shininess", 64.0f);
 
-        kocka_shader.setMat4("model", model_kocka);
-        kocka_shader.setMat4("view", pogled);
-        kocka_shader.setMat4("projection", projection_kocka);
+        //proj
+        mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 view_light = kamera.GetViewMatrix();
 
-
-        kocka_shader.setVec3("lightColor", 1.0, 1.0, 1.0);
+        kocka_shader.setMat4("projection", projection_light);
+        kocka_shader.setMat4("view", view_light);
+        mat4 model = mat4(1.0f);
+        kocka_shader.setMat4("model", model);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -348,39 +331,17 @@ int main() {
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //svetlost kocka
+
         light_source_shader.use();
-
-        //uniforms
-        light_source_shader.setVec3("light.position", lightPos);
-        light_source_shader.setVec3("viewPos", kamera.Position);
-
-        //osobine
-        light_source_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-        light_source_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-        light_source_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
-        //materijal
-        light_source_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        light_source_shader.setFloat("material.shininess", 64.0f);
-
-        //proj svetlost
-        mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        mat4 view_light = kamera.GetViewMatrix();
-
         light_source_shader.setMat4("projection", projection_light);
         light_source_shader.setMat4("view", view_light);
-
         mat4 model_light = mat4(1.0f);
         model_light = translate(model_light, lightPos);
         model_light = scale(model_light, vec3(0.2f));
-
         light_source_shader.setMat4("model", model_light);
-
 
         glBindVertexArray(VAO_light);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
