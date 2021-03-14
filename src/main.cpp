@@ -37,6 +37,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija);
 void scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
 void update(GLFWwindow* window);
+unsigned int loadTexture(const char *path);
+
 
 int main() {
 
@@ -117,48 +119,48 @@ int main() {
     Shader kocka_shader("resources/shaders/kocka.vs", "resources/shaders/kocka.fs");
 
     float vertices_kocka[] = {
-            //koordinate tacaka     //koordinate teksture   //boja
-            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f, -0.5f, -0.5f,     1.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
-            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            //koordinate tacaka     //koordinate teksture   //normale
+            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.0f,  0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f,     1.0f, 0.0f,             0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,             0.0f,  0.0f, -1.0f,
 
-            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
-            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.0f,  0.0f,  1.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.0f,  0.0f,  1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             0.0f,  0.0f,  1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 1.0f,             0.0f,  0.0f,  1.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,             0.0f,  0.0f,  1.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.0f,  0.0f,  1.0f,
 
-            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            -0.5f,  0.5f, -0.5f,    1.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.3f, 0.7f, 0.8f, 1.0f,
-            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f, 1.0f,             -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,    1.0f, 0.0f,             -1.0f,  0.0f,  0.0f,
 
-            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f, -0.5f,  0.5f,     0.0f, 0.0f,             0.3f, 0.7f, 0.8f, 1.0f,
-            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,     0.0f, 1.0f,             1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,     0.0f, 0.0f,             1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             1.0f,  0.0f,  0.0f,
 
-            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            0.5f, -0.5f, -0.5f,     1.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.9f, 0.2f, 0.7f, 1.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,     1.0f, 1.0f,             0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,     1.0f, 0.0f,             0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,    0.0f, 0.0f,             0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,    0.0f, 1.0f,             0.0f, -1.0f,  0.0f,
 
-            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.3f, 0.7f, 0.8f, 1.0f,
-            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f,
-            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             1.0f, 0.5f, 0.6f, 1.0f,
-            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,             0.9f, 0.2f, 0.7f, 1.0f,
-            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.6f, 0.3f, 0.5f, 1.0f
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,     1.0f, 1.0f,             0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,     1.0f, 0.0f,             0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,             0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.0f,  1.0f,  0.0f
     };
 
     unsigned VBO_kocka, VAO_kocka;
@@ -170,9 +172,9 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO_kocka);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_kocka), vertices_kocka, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(3 * sizeof(float)));
-    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 9*sizeof(float), (void*)(5 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(5 * sizeof(float)));
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -270,30 +272,12 @@ int main() {
     }
     stbi_image_free(data);
 
-    glBindTexture(GL_TEXTURE_2D, teksture[1]);
+    unsigned int diffuseMap = loadTexture(FileSystem::getPath("resources/textures/gold_marble.jpg").c_str());
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width_kocka, height_kocka, nrChannels_kocka;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data_kocka = stbi_load(FileSystem::getPath("resources/textures/Pink-Marble-Paper.png").c_str(), &width_kocka, &height_kocka, &nrChannels_kocka, 0);
-    if (data_kocka)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_kocka, height_kocka, 0, GL_RGB, GL_UNSIGNED_BYTE, data_kocka);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data_kocka);
+    light_source_shader.use();
+    light_source_shader.setInt("material.diffuse", 0);
 
     pravougaonik_shader.use();
-    kocka_shader.use();
 
 
     //petlja renderovanja
@@ -351,16 +335,15 @@ int main() {
         projection_kocka = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
 
-        kocka_shader.setMat4("model_kocka", model_kocka);
-        kocka_shader.setMat4("view_kocka", pogled);
-        kocka_shader.setMat4("projection_kocka", projection_kocka);
+        kocka_shader.setMat4("model", model_kocka);
+        kocka_shader.setMat4("view", pogled);
+        kocka_shader.setMat4("projection", projection_kocka);
 
 
         kocka_shader.setVec3("lightColor", 1.0, 1.0, 1.0);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, teksture[1]);
-        kocka_shader.setInt("texture_kocka", 0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -368,6 +351,20 @@ int main() {
         //svetlost kocka
         light_source_shader.use();
 
+        //uniforms
+        light_source_shader.setVec3("light.position", lightPos);
+        light_source_shader.setVec3("viewPos", kamera.Position);
+
+        //osobine
+        light_source_shader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        light_source_shader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        light_source_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+        //materijal
+        light_source_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        light_source_shader.setFloat("material.shininess", 64.0f);
+
+        //proj svetlost
         mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         mat4 view_light = kamera.GetViewMatrix();
 
@@ -379,6 +376,7 @@ int main() {
         model_light = scale(model_light, vec3(0.2f));
 
         light_source_shader.setMat4("model", model_light);
+
 
         glBindVertexArray(VAO_light);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -442,4 +440,40 @@ void update(GLFWwindow* window) {
         kamera.ProcessKeyboard(LEFT, delta_time);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         kamera.ProcessKeyboard(RIGHT, delta_time);
+}
+unsigned int loadTexture(char const * path)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
