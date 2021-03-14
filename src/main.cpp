@@ -334,8 +334,10 @@ int main() {
         glBindVertexArray(VAO_kocka);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-
+        //svetlost
         light_source_shader.use();
+        lightPos = vec3(1.2 * cos(curr_frame), 1.0f, 2.0 * sin(curr_frame)); //rotacija svetlosti
+
         light_source_shader.setMat4("projection", projection_light);
         light_source_shader.setMat4("view", view_light);
         mat4 model_light = mat4(1.0f);
