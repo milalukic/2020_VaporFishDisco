@@ -253,6 +253,7 @@ int main() {
     kocka_shader.use();
     kocka_shader.setInt("material.diffuse", 0);
     kocka_shader.setInt("material.specular", 1);
+
     pravougaonik_shader.use();
 
 
@@ -306,7 +307,7 @@ int main() {
         kocka_shader.use();
 
         //uniforms
-        kocka_shader.setVec3("light.position", lightPos);
+        kocka_shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
         kocka_shader.setVec3("viewPos", kamera.Position);
 
         //osobine
