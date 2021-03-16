@@ -1,4 +1,5 @@
 /snap/clion/139/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/mila/Documents/ComputerGraphicsProject
+<<<<<<< HEAD
 -- The C compiler identification is GNU 7.5.0
 -- The CXX compiler identification is GNU 7.5.0
 -- Check for working C compiler: /usr/bin/cc
@@ -14,6 +15,8 @@
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so   
+=======
+>>>>>>> d8beb4807ab255ccbd56f8219cdd7bdcd91551eb
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/mila/Documents/ComputerGraphicsProject/cmake-build-debug
