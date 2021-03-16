@@ -12,6 +12,8 @@
 #include <learnopengl/shader_s.h>
 #include <learnopengl/camera.h>
 
+//aaaa
+
 using namespace glm;
 
 //velicina prozora

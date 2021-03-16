@@ -1,4 +1,4 @@
-# Install script for directory: /home/adeline/Desktop/rg/ComputerGraphicsProject/libs/imgui
+# Install script for directory: /home/mila/Documents/ComputerGraphicsProject/libs/imgui
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
