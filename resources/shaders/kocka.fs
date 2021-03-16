@@ -8,7 +8,7 @@ struct Material {
 };
 
 struct Light {
-    //vec3 position;
+    vec3 position;
     vec3 direction;
 
     vec3 ambient;
@@ -44,4 +44,4 @@ void main()
 
     vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
-} 
+}
