@@ -230,6 +230,13 @@ int main() {
             -0.5f,  0.5f, -0.5f,
     };
 
+    vec3 pointLightPositions[] = {
+            vec3( 0.7f,  0.2f,  2.0f),
+            vec3( 2.3f, -3.3f, -4.0f),
+            vec3(-4.0f,  2.0f, -12.0f),
+            vec3( 0.0f,  0.0f, -3.0f)
+    };
+
     unsigned VBO_light, VAO_light;
     glGenVertexArrays(1, &VAO_light);
     glGenBuffers(1, &VBO_light);
@@ -309,13 +316,12 @@ int main() {
         kocka_shader.use();
 
         //uniforms
-        kocka_shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        //kocka_shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
         kocka_shader.setVec3("viewPos", kamera.Position);
-
-        //osobine
-        kocka_shader.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
-        kocka_shader.setVec3("light.diffuse", 0.6f, 0.6f, 0.6f);
-        kocka_shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        kocka_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+        kocka_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+        kocka_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
         //materijal
         kocka_shader.setFloat("material.shininess", 90.0f);
