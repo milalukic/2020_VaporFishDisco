@@ -11,6 +11,9 @@
 #include <learnopengl/shader_m.h>
 #include <learnopengl/shader_s.h>
 #include <learnopengl/camera.h>
+#include <learnopengl/mesh.h>
+#include <learnopengl/model.h>
+
 
 //aaaa
 
@@ -259,6 +262,10 @@ int main() {
     pravougaonik_shader.use();
 
 
+    //Model!
+    Shader model_shader("resources/shaders/model.vs", "resources/shaders/model.fs");
+    Model model_fishy(FileSystem::getPath("resources/objects/fish/12265_Fish_v1_L2.obj"));
+
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
         //frame-time, vezano za kameru
@@ -287,8 +294,8 @@ int main() {
         mat4 model_pravougaonik = mat4(1.0f);
         model_pravougaonik = rotate(model_pravougaonik,  radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
 
-        mat4 view_pravougaonik = mat4(1.0f);
-        view_pravougaonik = translate(view_pravougaonik, vec3(0.0f, 0.0f, -3.0f));
+//        mat4 view_pravougaonik = mat4(1.0f);
+//        view_pravougaonik = translate(view_pravougaonik, vec3(0.0f, 0.0f, -3.0f));
 
         mat4 projection_pravougaonik = mat4(1.0f);
         projection_pravougaonik = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -361,10 +368,10 @@ int main() {
 
         //proj
         mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        mat4 view_light = kamera.GetViewMatrix();
+
 
         kocka_shader.setMat4("projection", projection_light);
-        kocka_shader.setMat4("view", view_light);
+        kocka_shader.setMat4("view", pogled);
         mat4 model = mat4(1.0f);
         kocka_shader.setMat4("model", model);
 
@@ -382,7 +389,7 @@ int main() {
         lightPos = vec3(1.2 * cos(curr_frame), 1.0f, 2.0 * sin(curr_frame)); //rotacija svetlosti
 
         light_source_shader.setMat4("projection", projection_light);
-        light_source_shader.setMat4("view", view_light);
+        light_source_shader.setMat4("view", pogled);
 
 
         for (unsigned int i = 0; i < 3; i++)
@@ -393,6 +400,22 @@ int main() {
             light_source_shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        //model
+
+        model_shader.use();
+
+        mat4 projection_model = perspective(radians(kamera.Zoom), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
+        mat4 model_model = mat4(1.0f);
+        model_model = translate(model_model, vec3(0.0f, 1.0f, 0.0f));
+        model_model = scale(model_model, vec3(0.03f, 0.03f, 0.03f));
+        model_model = rotate(model_model, radians(-90.0f),vec3(1.0f, 0.0f, 0.0f));
+;
+        model_shader.setMat4("projection", projection_model);
+        model_shader.setMat4("view", pogled);
+        model_shader.setMat4("model", model_model);
+        model_fishy.Draw(model_shader);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
