@@ -265,7 +265,7 @@ int main() {
     //Model!
     Shader model_shader("resources/shaders/model.vs", "resources/shaders/model.fs");
     Model model_fishy(FileSystem::getPath("resources/objects/fish/12265_Fish_v1_L2.obj"));
-
+    model_fishy.SetShaderTextureNamePrefix("material.");
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
         //frame-time, vezano za kameru
@@ -405,6 +405,45 @@ int main() {
 
         model_shader.use();
 
+        //direkciono
+        model_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+        model_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+        model_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        // point light 1
+        model_shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        model_shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        model_shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        model_shader.setFloat("pointLights[0].constant", 1.0f);
+        model_shader.setFloat("pointLights[0].linear", 0.09);
+        model_shader.setFloat("pointLights[0].quadratic", 0.032);
+        // point light 2
+        model_shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+        model_shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+        model_shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+        model_shader.setFloat("pointLights[1].constant", 1.0f);
+        model_shader.setFloat("pointLights[1].linear", 0.09);
+        model_shader.setFloat("pointLights[1].quadratic", 0.032);
+        // point light 3
+        model_shader.setVec3("pointLights[2].position", pointLightPositions[2]);
+        model_shader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+        model_shader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+        model_shader.setFloat("pointLights[2].constant", 1.0f);
+        model_shader.setFloat("pointLights[2].linear", 0.09);
+        model_shader.setFloat("pointLights[2].quadratic", 0.032);
+        // point light 4
+        model_shader.setVec3("pointLights[3].position", pointLightPositions[3]);
+        model_shader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+        model_shader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+        model_shader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+        model_shader.setFloat("pointLights[3].constant", 1.0f);
+        model_shader.setFloat("pointLights[3].linear", 0.09);
+        model_shader.setFloat("pointLights[3].quadratic", 0.032);
+
+
         mat4 projection_model = perspective(radians(kamera.Zoom), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
         mat4 model_model = mat4(1.0f);
         model_model = translate(model_model, vec3(0.0f, 1.0f, 0.0f));
@@ -414,7 +453,9 @@ int main() {
         model_shader.setMat4("projection", projection_model);
         model_shader.setMat4("view", pogled);
         model_shader.setMat4("model", model_model);
+        model_shader.setFloat("material.shininess", 35.0f);
         model_fishy.Draw(model_shader);
+
 
 
         glfwSwapBuffers(window);
