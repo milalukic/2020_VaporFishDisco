@@ -265,7 +265,7 @@ int main() {
     //Model!
     Shader model_shader("resources/shaders/model.vs", "resources/shaders/model.fs");
     Model model_fishy(FileSystem::getPath("resources/objects/fish/12265_Fish_v1_L2.obj"));
-    model_fishy.SetShaderTextureNamePrefix("material.");
+
     //petlja renderovanja
     while(!glfwWindowShouldClose(window)) {
         //frame-time, vezano za kameru
@@ -434,7 +434,7 @@ int main() {
         model_shader.setFloat("pointLights[2].constant", 1.0f);
         model_shader.setFloat("pointLights[2].linear", 0.09);
         model_shader.setFloat("pointLights[2].quadratic", 0.032);
-        // point light 4
+        // point light
         model_shader.setVec3("pointLights[3].position", pointLightPositions[3]);
         model_shader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
         model_shader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
@@ -442,6 +442,8 @@ int main() {
         model_shader.setFloat("pointLights[3].constant", 1.0f);
         model_shader.setFloat("pointLights[3].linear", 0.09);
         model_shader.setFloat("pointLights[3].quadratic", 0.032);
+        //materijal
+        model_shader.setFloat("material.shininess", 90.0f);
 
 
         mat4 projection_model = perspective(radians(kamera.Zoom), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -449,13 +451,11 @@ int main() {
         model_model = translate(model_model, vec3(0.0f, 1.0f, 0.0f));
         model_model = scale(model_model, vec3(0.03f, 0.03f, 0.03f));
         model_model = rotate(model_model, radians(-90.0f),vec3(1.0f, 0.0f, 0.0f));
-;
+
         model_shader.setMat4("projection", projection_model);
         model_shader.setMat4("view", pogled);
         model_shader.setMat4("model", model_model);
-        model_shader.setFloat("material.shininess", 35.0f);
         model_fishy.Draw(model_shader);
-
 
 
         glfwSwapBuffers(window);
@@ -490,7 +490,7 @@ void mouse_callback(GLFWwindow *window, double x_pozicija, double y_pozicija){
     last_X = x_pozicija;
     last_Y = y_pozicija;
 
-   kamera.ProcessMouseMovement(x_offset, y_offset);
+    kamera.ProcessMouseMovement(x_offset, y_offset);
 }
 
 //TODO: nmp ni sta ovo radi protumacicu ga valjda lmao
