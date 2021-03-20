@@ -81,7 +81,6 @@ int main() {
 
     //pravougaonik
     Shader pravougaonik_shader("resources/shaders/pravougaonik.vs", "resources/shaders/pravougaonik.fs");
-    Shader pravougaonik_edge("resources/shaders/pravougaonik.vs", "resources/shaders/edge.fs");
 
     float vertices[] = {
             //pozicije              //boja                          //tekstura koordinate
@@ -190,6 +189,8 @@ int main() {
 
     //LIGHT SOURCE
     Shader light_source_shader("resources/shaders/izvor_svetlosti.vs", "resources/shaders/izvor_svetlosti.fs");
+    Shader light_edge("resources/shaders/izvor_svetlosti.vs", "resources/shaders/edge.fs");
+
     float vertices_light[] = {
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
@@ -289,21 +290,12 @@ int main() {
 
         //PROJEKCIJA - PRAVOUGAONIK
 
-        pravougaonik_edge.use();
+        pravougaonik_shader.use();
+
         mat4 model_pravougaonik = mat4(1.0f);
         model_pravougaonik = rotate(model_pravougaonik,  radians(-90.0f), vec3(1.0f, 0.0f, 0.0f));
         mat4 projection_pravougaonik = mat4(1.0f);
         projection_pravougaonik = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-        pravougaonik_edge.setMat4("model_pravougaonik", model_pravougaonik);
-        pravougaonik_edge.setMat4("view_pravougaonik", pogled);
-        pravougaonik_edge.setMat4("projection_pravougaonik", projection_pravougaonik);
-
-
-        pravougaonik_shader.use();
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
 
         pravougaonik_shader.setInt("texture1", 0);
 
@@ -314,26 +306,7 @@ int main() {
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
 
-        pravougaonik_edge.use();
-        float scale_edge = 1.1;
-
-        model_pravougaonik = scale(model_pravougaonik, vec3(scale_edge,scale_edge,scale_edge));
-
-        pravougaonik_edge.setMat4("model_pravougaonik", model_pravougaonik);
-        pravougaonik_edge.setMat4("view_pravougaonik", pogled);
-        pravougaonik_edge.setMat4("projection_pravougaonik", projection_pravougaonik);
-
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        glBindVertexArray(0);
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
-        glEnable(GL_DEPTH_TEST);
 
         // PROJEKCIJA - KOCKA
 
@@ -413,20 +386,40 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //svetlost
-        light_source_shader.use();
         lightPos = vec3(1.2 * cos(curr_frame), 1.0f, 2.0 * sin(curr_frame)); //rotacija svetlosti
-
-        light_source_shader.setMat4("projection", projection_light);
-        light_source_shader.setMat4("view", pogled);
-
 
         for (unsigned int i = 0; i < 3; i++)
         {
+            light_edge.use();
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+
+            light_edge.setMat4("projection", projection_light);
+            light_edge.setMat4("view", pogled);
+
+            light_source_shader.use();
+
+            light_source_shader.setMat4("projection", projection_light);
+            light_source_shader.setMat4("view", pogled);
+
             model = mat4(1.0f);
             model = translate(model, pointLightPositions[i]);
             model = scale(model, vec3(0.2f));
             light_source_shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilMask(0x00);
+            glDisable(GL_DEPTH_TEST);
+            light_edge.use();
+            model = scale(model, vec3(1.1f));
+            light_edge.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
         }
 
         //model
