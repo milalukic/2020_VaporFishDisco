@@ -49,6 +49,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //necemo stare verzije
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWwindow *window;
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Andjela Niketic, Mila Lukic", nullptr, nullptr);
@@ -74,6 +75,7 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
     glDepthFunc(GL_LESS);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -317,7 +319,6 @@ int main() {
         kocka_shader.use();
 
         //uniforms
-        //kocka_shader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
         kocka_shader.setVec3("viewPos", kamera.Position);
 
         vec3 pointLightPositions[] = {
