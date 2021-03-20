@@ -164,7 +164,7 @@ stdint.h
 KHR/khrplatform.h
 -
 
-/home/adeline/Desktop/rg/ComputerGraphicsProject/src/main.cpp
+/home/mila/Documents/ComputerGraphicsProject/src/main.cpp
 iostream
 -
 glad/glad.h
@@ -180,7 +180,7 @@ learnopengl/filesystem.h
 stb_image.h
 -
 glm/gtc/matrix_transform.hpp
-/home/adeline/Desktop/rg/ComputerGraphicsProject/src/glm/gtc/matrix_transform.hpp
+/home/mila/Documents/ComputerGraphicsProject/src/glm/gtc/matrix_transform.hpp
 glm/gtc/type_ptr.hpp
 -
 learnopengl/shader.h
