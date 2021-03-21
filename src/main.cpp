@@ -287,6 +287,52 @@ int main() {
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+        vec3 pointLightPositions[] = {
+                vec3( 2.0*sin((float)glfwGetTime()),  1.0f,  2.0*cos((float)glfwGetTime())),
+                vec3( -1.2*sin((float)glfwGetTime()), -1.0f, -1.2*cos((float)glfwGetTime())),
+                vec3(-4.0*sin((float)glfwGetTime()),  2.0f, -9.0*cos((float)glfwGetTime())),
+        };
+        glBindVertexArray(VAO_kocka);
+        lightPos = vec3(1.2 * cos(curr_frame), 1.0f, 2.0 * sin(curr_frame)); //rotacija svetlosti
+
+
+        for (unsigned int i = 0; i < 3; i++)
+        {
+            light_edge.use();
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+
+            light_edge.setMat4("projection", projection_light);
+            light_edge.setMat4("view", pogled);
+
+            light_source_shader.use();
+
+            light_source_shader.setMat4("projection", projection_light);
+            light_source_shader.setMat4("view", pogled);
+
+            mat4 model = mat4(1.0f);
+            model = translate(model, pointLightPositions[i]);
+            model = scale(model, vec3(0.2f));
+            light_source_shader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilMask(0x00);
+            glDisable(GL_DEPTH_TEST);
+            light_edge.use();
+            model = scale(model, vec3(1.1f));
+            light_edge.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glEnable(GL_DEPTH_TEST);
+        }
+
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tekstura_pravougaonik);
 
@@ -320,12 +366,6 @@ int main() {
 
         //uniforms
         kocka_shader.setVec3("viewPos", kamera.Position);
-
-        vec3 pointLightPositions[] = {
-                vec3( 2.0*sin((float)glfwGetTime()),  1.0f,  2.0*cos((float)glfwGetTime())),
-                vec3( -1.2*sin((float)glfwGetTime()), -1.0f, -1.2*cos((float)glfwGetTime())),
-                vec3(-4.0*sin((float)glfwGetTime()),  2.0f, -9.0*cos((float)glfwGetTime())),
-        };
 
 
         //direkciono
@@ -369,9 +409,6 @@ int main() {
         kocka_shader.setFloat("material.shininess", 90.0f);
 
         //proj
-        mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-
         kocka_shader.setMat4("projection", projection_light);
         kocka_shader.setMat4("view", pogled);
         mat4 model = mat4(1.0f);
@@ -386,42 +423,6 @@ int main() {
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //svetlost
-        lightPos = vec3(1.2 * cos(curr_frame), 1.0f, 2.0 * sin(curr_frame)); //rotacija svetlosti
-
-        for (unsigned int i = 0; i < 3; i++)
-        {
-            light_edge.use();
-
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);
-            glStencilMask(0xFF);
-
-            light_edge.setMat4("projection", projection_light);
-            light_edge.setMat4("view", pogled);
-
-            light_source_shader.use();
-
-            light_source_shader.setMat4("projection", projection_light);
-            light_source_shader.setMat4("view", pogled);
-
-            model = mat4(1.0f);
-            model = translate(model, pointLightPositions[i]);
-            model = scale(model, vec3(0.2f));
-            light_source_shader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
-            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-            glStencilMask(0x00);
-            glDisable(GL_DEPTH_TEST);
-            light_edge.use();
-            model = scale(model, vec3(1.1f));
-            light_edge.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
-            glStencilMask(0xFF);
-            glStencilFunc(GL_ALWAYS, 0, 0xFF);
-            glEnable(GL_DEPTH_TEST);
-        }
 
         //model
 
