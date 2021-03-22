@@ -18,13 +18,13 @@ using namespace glm;
 
 //velicina prozora
 const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 800;
+const unsigned int SCR_HEIGHT = 700;
 
 bool gammaEnabled = true;
 bool gammaKeyPressed = false;
 
 //kamera deklaracija + mis
-Camera kamera(vec3(0.0f, 0.0f, 3.0f));
+Camera kamera(vec3(0.0f, 0.3f, 3.0f));
 
 bool first_mouse = true;
 float last_X = SCR_WIDTH / 2.0f;
@@ -55,7 +55,7 @@ int main() {
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWwindow *window;
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Andjela Niketic, Mila Lukic", nullptr, nullptr);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Vaporfishdisco", nullptr, nullptr);
     if (window == nullptr){
         std::cout << "GPU nije kompatibilna sa 3.3 verzijom\n";
         glfwTerminate();
@@ -78,7 +78,7 @@ int main() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
     glDepthFunc(GL_LESS);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -128,6 +128,7 @@ int main() {
     //Kocka
 
     Shader kocka_shader("resources/shaders/kocka.vs", "resources/shaders/kocka.fs");
+    Shader screenShader("resources/shaders/aa_post.vs","resources/shaders/aa_post.fs");
 
     float vertices_kocka[] = {
             //koordinate tacaka     //koordinate teksture   //normale
@@ -173,7 +174,18 @@ int main() {
             -0.5f,  0.5f,  0.5f,    0.0f, 0.0f,             0.0f,  1.0f,  0.0f,
             -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,             0.0f,  1.0f,  0.0f
     };
+    float quadVertices[] = {   // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+            // positions   // texCoords
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f, 0.0f,
+            1.0f, -1.0f,  1.0f, 0.0f,
 
+            -1.0f,  1.0f,  0.0f, 1.0f,
+            1.0f, -1.0f,  1.0f, 0.0f,
+            1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    //setup za kocku
     unsigned VBO_kocka, VAO_kocka;
     glGenVertexArrays(1, &VAO_kocka);
     glGenBuffers(1, &VBO_kocka);
@@ -190,6 +202,66 @@ int main() {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+
+    //setup za screen quad
+    unsigned int quadVAO, quadVBO;
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+
+    //MSAA framebuffer
+    unsigned int framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    // create a multisampled color attachment texture
+    unsigned int textureColorBufferMultiSampled;
+    glGenTextures(1, &textureColorBufferMultiSampled);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, SCR_WIDTH, SCR_HEIGHT, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled, 0);
+
+    // create a (also multisampled) renderbuffer object for depth and stencil attachments
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // configure second post-processing framebuffer
+    unsigned int intermediateFBO;
+    glGenFramebuffers(1, &intermediateFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
+
+    // create a color attachment texture
+    unsigned int screenTexture;
+    glGenTextures(1, &screenTexture);
+    glBindTexture(GL_TEXTURE_2D, screenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);	// we only need a color buffer
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        cout << "ERROR::FRAMEBUFFER:: Intermediate framebuffer is not complete!" << endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    //shader
+    kocka_shader.use();
+    screenShader.setInt("screenTexture", 0);
 
 
     //LIGHT SOURCE
@@ -239,7 +311,7 @@ int main() {
             -0.5f,  0.5f,  0.5f,
             -0.5f,  0.5f, -0.5f,
     };
-
+    //setup za svetlo
     unsigned VBO_light, VAO_light;
     glGenVertexArrays(1, &VAO_light);
     glGenBuffers(1, &VBO_light);
@@ -247,12 +319,9 @@ int main() {
     glBindVertexArray(VAO_light);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO_light);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), vertices_light, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_light), &vertices_light, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
 
 
     //TEKSTURA - pravougaonik i kocka
@@ -272,7 +341,6 @@ int main() {
 
     pravougaonik_shader.use();
 
-
     //Model!
     Shader model_shader("resources/shaders/model.vs", "resources/shaders/model.fs");
     Model model_fishy(FileSystem::getPath("resources/objects/fish/12265_Fish_v1_L2.obj"));
@@ -284,7 +352,6 @@ int main() {
         delta_time = curr_frame -last_frame;
         last_frame = curr_frame;
 
-
         update(window);
 
         //KAMERA - POGLED
@@ -295,6 +362,14 @@ int main() {
         glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        // 1. draw scene as normal in multisampled buffers
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glClearColor(0.6f, 1.0f, 0.7f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+
+        kocka_shader.use();
         mat4 projection_light = perspective(radians(kamera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
         vec3 pointLightPositions[] = {
@@ -362,79 +437,7 @@ int main() {
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
-
-        // PROJEKCIJA - KOCKA
-
-        kocka_shader.use();
-        light_source_shader.setInt("material.diffuse", 0);
-
-        //svetlost kocka
-        kocka_shader.use();
-
-        //uniforms
-        kocka_shader.setVec3("viewPos", kamera.Position);
-
-
-        //direkciono
-        kocka_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-        kocka_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-        kocka_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-        kocka_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-        // point light 1
-        kocka_shader.setVec3("pointLights[0].position", pointLightPositions[0]);
-        kocka_shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-        kocka_shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-        kocka_shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-        kocka_shader.setFloat("pointLights[0].constant", 1.0f);
-        kocka_shader.setFloat("pointLights[0].linear", 0.09);
-        kocka_shader.setFloat("pointLights[0].quadratic", 0.032);
-        // point light 2
-        kocka_shader.setVec3("pointLights[1].position", pointLightPositions[1]);
-        kocka_shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-        kocka_shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-        kocka_shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-        kocka_shader.setFloat("pointLights[1].constant", 1.0f);
-        kocka_shader.setFloat("pointLights[1].linear", 0.09);
-        kocka_shader.setFloat("pointLights[1].quadratic", 0.032);
-        // point light 3
-        kocka_shader.setVec3("pointLights[2].position", pointLightPositions[2]);
-        kocka_shader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-        kocka_shader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-        kocka_shader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-        kocka_shader.setFloat("pointLights[2].constant", 1.0f);
-        kocka_shader.setFloat("pointLights[2].linear", 0.09);
-        kocka_shader.setFloat("pointLights[2].quadratic", 0.032);
-        // point light 4
-        kocka_shader.setVec3("pointLights[3].position", pointLightPositions[3]);
-        kocka_shader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-        kocka_shader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-        kocka_shader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-        kocka_shader.setFloat("pointLights[3].constant", 1.0f);
-        kocka_shader.setFloat("pointLights[3].linear", 0.09);
-        kocka_shader.setFloat("pointLights[3].quadratic", 0.032);
-        //materijal
-        kocka_shader.setFloat("material.shininess", 90.0f);
-
-        kocka_shader.setInt("gamma", true);
-
-        //proj
-        kocka_shader.setMat4("projection", projection_light);
-        kocka_shader.setMat4("view", pogled);
-        mat4 model = mat4(1.0f);
-        kocka_shader.setMat4("model", model);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, gammaEnabled ? diffuseMap_gamma : diffuseMap);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularMap);
-
-        glBindVertexArray(VAO_kocka);
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-        //model
+        //MODEL
 
         model_shader.use();
 
@@ -490,11 +493,95 @@ int main() {
         model_shader.setMat4("model", model_model);
         model_fishy.Draw(model_shader);
 
+
+        // PROJEKCIJA - KOCKA
+
+        kocka_shader.use();
+        light_source_shader.setInt("material.diffuse", 0);
+
+        //svetlost kocka
+        kocka_shader.use();
+        //uniforms
+        kocka_shader.setVec3("viewPos", kamera.Position);
+        //direkciono
+        kocka_shader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+        kocka_shader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+        kocka_shader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        // point light 1
+        kocka_shader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        kocka_shader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        kocka_shader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        kocka_shader.setFloat("pointLights[0].constant", 1.0f);
+        kocka_shader.setFloat("pointLights[0].linear", 0.09);
+        kocka_shader.setFloat("pointLights[0].quadratic", 0.032);
+        // point light 2
+        kocka_shader.setVec3("pointLights[1].position", pointLightPositions[1]);
+        kocka_shader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+        kocka_shader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+        kocka_shader.setFloat("pointLights[1].constant", 1.0f);
+        kocka_shader.setFloat("pointLights[1].linear", 0.09);
+        kocka_shader.setFloat("pointLights[1].quadratic", 0.032);
+        // point light 3
+        kocka_shader.setVec3("pointLights[2].position", pointLightPositions[2]);
+        kocka_shader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+        kocka_shader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+        kocka_shader.setFloat("pointLights[2].constant", 1.0f);
+        kocka_shader.setFloat("pointLights[2].linear", 0.09);
+        kocka_shader.setFloat("pointLights[2].quadratic", 0.032);
+        // point light 4
+        kocka_shader.setVec3("pointLights[3].position", pointLightPositions[3]);
+        kocka_shader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+        kocka_shader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+        kocka_shader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+        kocka_shader.setFloat("pointLights[3].constant", 1.0f);
+        kocka_shader.setFloat("pointLights[3].linear", 0.09);
+        kocka_shader.setFloat("pointLights[3].quadratic", 0.032);
+        //materijal
+        kocka_shader.setFloat("material.shininess", 90.0f);
+
+        kocka_shader.setInt("gamma", true);
+
+        //proj
+        kocka_shader.setMat4("projection", projection_light);
+        kocka_shader.setMat4("view", pogled);
+        mat4 model_kocka = mat4(1.0f);
+        //model_kocka = rotate(model_kocka, radians(-45.0f), vec3(0.0f, 1.0f, 0.0f));
+        kocka_shader.setMat4("model", model_kocka);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, gammaEnabled ? diffuseMap_gamma : diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+
+        glBindVertexArray(VAO_kocka);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // 2. now blit multisampled buffer(s) to normal colorbuffer of intermediate FBO. Image is stored in screenTexture
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
+        glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        // 3. now render quad with scene's visuals as its texture image
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
+
+        //iscrtavanje Screen quad
+        screenShader.use();
+        glBindVertexArray(quadVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, screenTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
         glfwSwapBuffers(window);
-
         glfwPollEvents();
-
-
     }
 
     glDeleteVertexArrays(1, &VAO_kocka);
@@ -538,7 +625,6 @@ void scroll_callback(GLFWwindow *window, double x_offset, double y_offset){
 
 //WASD, ESC
 void update(GLFWwindow* window) {
-    const float camera_speed = 0.05f;
     //ako kliknemo escape izlazimo iz prozora
     if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS)
         glfwSetWindowShouldClose(window,true);
@@ -550,8 +636,6 @@ void update(GLFWwindow* window) {
         kamera.ProcessKeyboard(LEFT, delta_time);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         kamera.ProcessKeyboard(RIGHT, delta_time);
-
-
 }
 unsigned int loadTexture(char const * path, bool gammaCorrection)
 {
