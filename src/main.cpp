@@ -20,7 +20,7 @@ using namespace glm;
 const unsigned int SCR_WIDTH = 1024;
 const unsigned int SCR_HEIGHT = 800;
 
-bool gammaEnabled = false;
+bool gammaEnabled = true;
 bool gammaKeyPressed = false;
 
 //kamera deklaracija + mis
@@ -284,6 +284,7 @@ int main() {
         delta_time = curr_frame -last_frame;
         last_frame = curr_frame;
 
+
         update(window);
 
         //KAMERA - POGLED
@@ -415,6 +416,8 @@ int main() {
         //materijal
         kocka_shader.setFloat("material.shininess", 90.0f);
 
+        kocka_shader.setInt("gamma", true);
+
         //proj
         kocka_shader.setMat4("projection", projection_light);
         kocka_shader.setMat4("view", pogled);
@@ -487,11 +490,10 @@ int main() {
         model_shader.setMat4("model", model_model);
         model_fishy.Draw(model_shader);
 
-
-        std::cout << (gammaEnabled ? "Gamma enabled" : "Gamma disabled") << std::endl;
-
         glfwSwapBuffers(window);
+
         glfwPollEvents();
+
 
     }
 
@@ -549,15 +551,7 @@ void update(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         kamera.ProcessKeyboard(RIGHT, delta_time);
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !gammaKeyPressed)
-    {
-        gammaEnabled = !gammaEnabled;
-        gammaKeyPressed = true;
-    }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
-    {
-        gammaKeyPressed = false;
-    }
+
 }
 unsigned int loadTexture(char const * path, bool gammaCorrection)
 {
