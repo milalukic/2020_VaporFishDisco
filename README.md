@@ -18,3 +18,5 @@ Contents:<br>
 - **Mouse** controls:<br>
   - camera **movement**<br>
   - **scroll** to zoom in/out<br>
+
+![image](https://github.com/milalukic/VaporFishDisco_ComputerGraphicsProject/assets/56547304/7e861723-6298-48cc-b25a-0472da18680a)
